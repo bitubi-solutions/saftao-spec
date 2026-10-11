@@ -1,0 +1,51 @@
+{
+  "description": "Vectores de assinatura do campo Hash (RSA 1024, SHA-1, PKCS#1 v1.5, base64 de 172 caracteres). A chave abaixo é APENAS DE TESTE, gerada para estes vectores; nunca usar em produção nem no software real. Ver spec/04-signature.md.",
+  "status": "verificado (proposta): parâmetros da Proposta de Decreto Executivo MinFin 2018 (Anexo II); valores gerados com OpenSSL e confirmados com python-cryptography",
+  "parameters": {
+    "keyBits": 1024,
+    "digest": "SHA-1",
+    "padding": "PKCS#1 v1.5",
+    "signatureEncoding": "base64, sem quebras de linha, 172 caracteres",
+    "messageEncoding": "UTF-8, sem quebra de linha no fim"
+  },
+  "testPrivateKeyPem": "-----BEGIN RSA PRIVATE KEY-----\nMIICXQIBAAKBgQDhBU/oZyXMcbL/8b30BxAKEXWIwudTEU5AspfOByl8viThQxp7\nrEe3J4sF8K01YBfHjGMovH4FSMTFi2wBDoCQr/7ox9CY/U9382EgyiD0SMSNY5Mr\nMDrEyoG9VnsuwUygip6JffdS+k4xEfc385bYuqvwd6U+k09xAZGzyclO/QIDAQAB\nAoGAch50kSPGurGrGzypnln6m3CRUCOwl6M+MXehn35oXvg70fZrNu9/i3bFfeS6\no0gxpyUeoOk/bESkbp8vzjVho4uHOmVxQHPw6IYIsrsh/97rxPxSLCRS5yTA3lre\nqXu0TqXDBKH007Ujzkc/i7zI2Umsz9WfvfQZdMDu+L5Xn+0CQQD/KojRjqwOy8mi\nEBMZZ6M75Lp2d2arM59VkTALdid4QJQDn+3jruTc2ymQ/NTXG+kc4JnENAGoS9eP\nGs3ca56TAkEA4cGPDlxQc3vAcQZtl6unG7YttE+P0SQsKwlQWNpPGyibMCOFjxp5\nLP0Q5HgyKyYEnc0dLVdwSxbBjL8l2IlGLwJBANNNZtWaf1MVYRkKlLZiA2PyypKV\n1/iIHDcgrxeetZq4Z5oE01vLlgxqlSZSqPKlU0qtl8hJhOHYRF5mRPl2SW8CQAqH\nzdV8puAMKLjc9OW7Qws+3zjm8S1vQ4QqZg4O+NuqdDq1nXhEYtyfXVda5/QtTM/T\njoXb60gFYrfe/rPwC08CQQCWtg6dT3K9rH7XfcgsWN+waTvGIx0q0ntZDJPeA37t\nl6/wgdMLsM5KM05C6DZYtcXDwdFbVPTCq6BSbrPk1SHL\n-----END RSA PRIVATE KEY-----\n",
+  "testPublicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDhBU/oZyXMcbL/8b30BxAKEXWI\nwudTEU5AspfOByl8viThQxp7rEe3J4sF8K01YBfHjGMovH4FSMTFi2wBDoCQr/7o\nx9CY/U9382EgyiD0SMSNY5MrMDrEyoG9VnsuwUygip6JffdS+k4xEfc385bYuqvw\nd6U+k09xAZGzyclO/QIDAQAB\n-----END PUBLIC KEY-----\n",
+  "chain": [
+    {
+      "id": "chain-1",
+      "input": {
+        "InvoiceDate": "2018-05-18",
+        "SystemEntryDate": "2018-05-18T11:22:19",
+        "InvoiceNo": "FAC 001/18",
+        "GrossTotal": "53.00",
+        "previousHash": ""
+      },
+      "expectedMessage": "2018-05-18;2018-05-18T11:22:19;FAC 001/18;53.00;",
+      "expectedHash": "0fmCaJ0VvGTDrKLqUfsw/foBnwTNV/cHhKKuoSl6LdeY9fJ7CljwaRP/M9dYnzoVXc2FZPUalmVDTqdib3l3aD7Qb47b/bd5RkpvVi68cvOhCn6uOyIpp4/U1KO6GgSNKsn6mRifz/fV5udkVvukRRbx2T1p8XOIJU6/TBgY2Ec="
+    },
+    {
+      "id": "chain-2",
+      "input": {
+        "InvoiceDate": "2018-05-18",
+        "SystemEntryDate": "2018-05-18T11:43:25",
+        "InvoiceNo": "FAC 001/19",
+        "GrossTotal": "75.00",
+        "previousHash": "0fmCaJ0VvGTDrKLqUfsw/foBnwTNV/cHhKKuoSl6LdeY9fJ7CljwaRP/M9dYnzoVXc2FZPUalmVDTqdib3l3aD7Qb47b/bd5RkpvVi68cvOhCn6uOyIpp4/U1KO6GgSNKsn6mRifz/fV5udkVvukRRbx2T1p8XOIJU6/TBgY2Ec="
+      },
+      "expectedMessage": "2018-05-18;2018-05-18T11:43:25;FAC 001/19;75.00;0fmCaJ0VvGTDrKLqUfsw/foBnwTNV/cHhKKuoSl6LdeY9fJ7CljwaRP/M9dYnzoVXc2FZPUalmVDTqdib3l3aD7Qb47b/bd5RkpvVi68cvOhCn6uOyIpp4/U1KO6GgSNKsn6mRifz/fV5udkVvukRRbx2T1p8XOIJU6/TBgY2Ec=",
+      "expectedHash": "1f1dkKki6kKiE70QG34g8Ha1qtVHNSrk6kcygUH3wzCWVSNmScpgSpDNdwF2mFgXTkpVvCCBO7MBbdy58MXpFlfFscZMUdaTU10csMO96PZNbEvvEruKXNcaemWfPDkEijpWzOfLZ4K36nnDu//2X+LYVldNbN0obOWG9+zVKU4="
+    },
+    {
+      "id": "chain-3",
+      "input": {
+        "InvoiceDate": "2018-05-19",
+        "SystemEntryDate": "2018-05-19T09:10:00",
+        "InvoiceNo": "FAC 001/20",
+        "GrossTotal": "1200.00",
+        "previousHash": "1f1dkKki6kKiE70QG34g8Ha1qtVHNSrk6kcygUH3wzCWVSNmScpgSpDNdwF2mFgXTkpVvCCBO7MBbdy58MXpFlfFscZMUdaTU10csMO96PZNbEvvEruKXNcaemWfPDkEijpWzOfLZ4K36nnDu//2X+LYVldNbN0obOWG9+zVKU4="
+      },
+      "expectedMessage": "2018-05-19;2018-05-19T09:10:00;FAC 001/20;1200.00;1f1dkKki6kKiE70QG34g8Ha1qtVHNSrk6kcygUH3wzCWVSNmScpgSpDNdwF2mFgXTkpVvCCBO7MBbdy58MXpFlfFscZMUdaTU10csMO96PZNbEvvEruKXNcaemWfPDkEijpWzOfLZ4K36nnDu//2X+LYVldNbN0obOWG9+zVKU4=",
+      "expectedHash": "demTBG4nJk+sPoyK9OdSACulpUxN9XAV+GcUllW+TYSJYPK7a83kxFIDuH8/F1jC9H0QoViCdLh7ZVWtpi2oMF0vbRU2Z12Qesh5s1/M5HToTVVrlRa/gZCnK0/wlcFl0v23r8acpnkTcdqZSkdzp8PpQ+FgJtHimrqETZwqTow="
+    }
+  ]
+}

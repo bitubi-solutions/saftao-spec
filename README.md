@@ -9,7 +9,7 @@ Este repo é a fonte de verdade das regras e dos casos de teste. Cada biblioteca
 **v0.2, rascunho.** Cobre a versão **1.01_01** do SAF-T (AO). Cada afirmação indica o seu estado de verificação; ver [`spec/00-overview.md`](spec/00-overview.md) e [`spec/sources.md`](spec/sources.md).
 
 - **Estrutura, campos e regras de negócio:** especificadas, a partir do XSD e da legislação.
-- **Assinatura dos documentos:** a **construção da mensagem** está especificada e tem vectores de teste; **a assinatura em si ainda não** — o algoritmo de resumo (SHA-1 ou SHA-256) está por confirmar. Ver [`spec/04-signature.md`](spec/04-signature.md).
+- **Assinatura dos documentos:** especificada (RSA 1024 bits, SHA-1, PKCS#1 v1.5, base64 de 172 caracteres) com vectores de teste. **A fonte é uma proposta oficial de 2018**; confirmar a vigência antes de produção. Ver [`spec/04-signature.md`](spec/04-signature.md).
 - Parte das regras vem de uma *proposta* de decreto executivo do Ministério das Finanças (2018), não do texto final.
 
 ## Conteúdo

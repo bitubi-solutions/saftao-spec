@@ -1,6 +1,6 @@
 # 04 — Assinatura e encadeamento dos documentos
 
-> **Estado: especificado, excepto o algoritmo de resumo (digest) e o padding, que continuam por confirmar.** As bibliotecas podem implementar a **construção da mensagem a assinar** (testável, ver `conformance/signature/`). **Não** devem implementar a assinatura propriamente dita até o digest estar confirmado: uma assinatura errada produz documentos fiscalmente inválidos.
+> **Estado: especificado, com a ressalva de que a fonte é uma proposta oficial de 2018** (ver abaixo). Os parâmetros (RSA 1024 bits, SHA-1, PKCS#1 v1.5) vêm dessa proposta e têm vectores de teste (`conformance/signature/`). **Antes de usar em produção, confirmar** que continuam em vigor no regime actual, incluindo o de facturação electrónica de 2025/26.
 
 ## Níveis de verificação usados aqui
 
@@ -25,10 +25,12 @@
 | Chave pública | Extraída da privada, formato **PEM em base64**, ficheiro `.txt`, enviada à AGT com a Declaração Modelo 8 | verificado (proposta) |
 | Mudança de par de chaves | Só pelo produtor, após comunicação à AGT (Modelo 8) e envio da nova chave pública | verificado (proposta) |
 | Versão da chave | Inteiros sequenciais, a partir de 1 | verificado (proposta) |
-| Tamanho da chave | **1024 bits**: o exemplo oficial de assinatura da proposta tem 172 caracteres base64 = 128 bytes, que é o tamanho de uma assinatura RSA de 1024 bits | **inferido** |
-| Algoritmo de resumo (digest) | SHA-1 nas especificações portuguesas equivalentes e numa biblioteca de terceiros para Angola; **a proposta diz só "RSA"** | **por confirmar** |
-| Padding | PKCS#1 v1.5 é o habitual; não indicado | **por confirmar** |
-| Codificação da assinatura | Base64, 172 caracteres (campo `Hash`, texto 172) | verificado + verificado (proposta) |
+| Tamanho da chave | **1024 bits** (Anexo II da proposta; coerente com 172 caracteres base64 = 128 bytes) | verificado (proposta) |
+| Algoritmo de resumo (digest) | **SHA-1** ("Formato do Hash da mensagem = SHA-1"; exemplo `openssl dgst -sha1 -sign`) | verificado (proposta) |
+| Padding | **PKCS#1 v1.5** (a proposta escreve "OAEP Padding = PKCS1 v1.5 padding", terminologia imprecisa; o procedimento exemplificado, `openssl dgst -sha1 -sign`, é a assinatura RSASSA-PKCS1-v1_5) | verificado (proposta) |
+| Mensagem | UTF-8, sem quebra de linha no fim | verificado (proposta) |
+| Codificação da assinatura | Base64 numa única linha, **172 caracteres** (campo `Hash`, texto 172) | verificado + verificado (proposta) |
+| Certificado | Não é exigido certificado de entidade credenciada; pode ser auto-assinado, para extrair a chave pública | verificado (proposta) |
 
 ## Mensagem a assinar
 
@@ -61,7 +63,7 @@ A mensagem é o texto formado pela concatenação dos campos abaixo, **separados
 - Cada documento é assinado com o `Hash` do **último documento emitido da mesma série e tipo**. *(verificado (proposta))*
 - **Primeiro documento da série:** o campo "`Hash` anterior" é **vazio**. *(verificado (proposta))*
 - **Séries plurianuais:** no início de cada exercício, o primeiro documento **pode** ser assinado com o `Hash` do último documento do exercício anterior. *(verificado (proposta))*
-- Se a mensagem do primeiro documento termina em `;` (campo final vazio): **por confirmar**; na especificação portuguesa equivalente termina.
+- No primeiro documento a mensagem **termina em `;`** (campo final vazio), sem quebra de linha: `2018-05-18;2018-05-18T11:22:19;FAC 001/18;53.00;`. *(verificado (proposta), Anexo II)*
 
 ### Exemplo oficial
 
@@ -95,13 +97,34 @@ A mensagem é o texto formado pela concatenação dos campos abaixo, **separados
 
 - A assinatura e a versão da chave são gravadas na base de dados, associadas ao registo integral do documento, sem encriptação, durante o prazo de arquivo legal. *(verificado (proposta))*
 
-## O que falta para fechar
+## Procedimento de referência (Anexo II da proposta)
 
-1. Fonte para o **digest** e o **padding** (texto final do acto de requisitos técnicos, ou documentação técnica da AGT para produtores de software).
-2. Se o texto final da proposta é idêntico ao localizado.
-3. Forma exacta da frase impressa.
+Chaves, com OpenSSL (apenas ilustrativo; o produtor pode usar qualquer implementação):
 
-Quando o digest estiver confirmado, acrescentam-se a chave de teste e os vectores de assinatura (`conformance/signature/`), e as bibliotecas passam a implementar a assinatura.
+```bash
+openssl genrsa -out ChavePrivada.pem 1024
+openssl rsa -in ChavePrivada.pem -out ChavePublica.pem -outform PEM -pubout   # a enviar à AGT, renomeada para .txt
+```
+
+Assinatura de um documento (mensagem gravada **sem** quebra de linha no fim):
+
+```bash
+openssl dgst -sha1 -sign ChavePrivada.pem -out Registo1.sha1 Registo1.txt
+openssl enc -base64 -in Registo1.sha1 -out Registo1.b64 -A      # 172 caracteres numa linha
+openssl dgst -sha1 -verify ChavePublica.pem -signature Registo1.sha1 Registo1.txt   # verificação
+```
+
+## Vectores de teste
+
+`conformance/signature/signing-chain.json` tem uma cadeia de três documentos com a **mensagem, o `Hash` esperado e uma chave de teste** (apenas para estes vectores). Os valores foram gerados com OpenSSL seguindo o procedimento acima e confirmados com uma segunda implementação independente (`python-cryptography`, PKCS#1 v1.5 + SHA-1): as duas dão a mesma assinatura (PKCS#1 v1.5 é determinístico). Uma biblioteca passa se, dada a mesma chave e os mesmos campos, produzir exactamente o `expectedHash`.
+
+## Ressalvas
+
+1. **Fonte é uma proposta de 2018.** Não encontrámos o acto final publicado. O Anexo II é em grande parte adaptado da especificação portuguesa: o próprio texto fala em "SAF-T(PT)" e o exemplo tem gralhas (por exemplo, `53.002;` no cabeçalho do exemplo e datas em formatos diferentes), pelo que usámos o texto passo a passo e não o exemplo literal.
+2. **Corroboração prática (não normativa).** Em 2020, um produtor reportou no repo `assoft-portugal/SAF-T-AO` (issue #49) que o validador da AGT rejeitava hashes gerados com uma chave de 1024 bits, o que mostra que o validador **verifica** a cadeia com chaves desse tamanho. Em 2021, outro (issue #195) mostrou que o portal valida a cadeia por série, e que **um documento com `SourceBilling = I` no meio de uma série `P` fazia falhar a validação** (ver R-045).
+3. **Regime de 2025/26.** A facturação electrónica nova usa assinatura **RS256** (RSA com SHA-256) numa API própria. **Não** sabemos se o regime novo alterou também os parâmetros do `Hash` do SAF-T. Confirmar antes de produção.
+4. **Segurança.** SHA-1 e RSA de 1024 bits são considerados fracos hoje. Usar estes parâmetros **apenas** para este campo, porque é o que a AGT define; não os usar noutro contexto. Se a AGT migrar para parâmetros mais fortes, esta secção muda.
+5. Forma exacta da frase impressa (com ou sem o ano).
 
 ## Facturação electrónica (fora do âmbito)
 

@@ -41,12 +41,14 @@ Os casos `schema` foram confirmados com o validador de referência (`tools/valid
 - `messageConstruction`: dados os campos do documento e o `Hash` anterior, a mensagem a assinar (campos separados por `;`).
 - `grossTotalFormat`: formatação do `GrossTotal` (duas casas, ponto decimal, sem separador de milhares, arredondado a duas casas).
 
-Cada vector tem `status` (`verificado (proposta)` ou `por confirmar`); ver `spec/04-signature.md`. **Não há vectores da assinatura em si**: o digest está por confirmar.
+Cada vector tem `status`; ver `spec/04-signature.md`.
+
+`signature/signing-chain.json` tem uma **cadeia de três documentos com a assinatura esperada** (RSA 1024 bits, SHA-1, PKCS#1 v1.5, base64 de 172 caracteres) e uma **chave de teste** (apenas para estes vectores; nunca usar noutro contexto). Foram gerados com OpenSSL e confirmados com uma segunda implementação independente. Uma biblioteca passa se, com a mesma chave e os mesmos campos, produzir exactamente o `expectedHash` de cada documento.
 
 ## Próximos casos
 
 - Um ou mais casos por regra restante de `03-business-rules.md` (R-001 a R-008, R-010 a R-011, R-020 a R-024), com ficheiros de venda, movimento, conferência e recibos.
-- Vectores de assinatura (chave de teste), depois de o digest ser confirmado.
+- Vectores de assinatura para documentos de movimento e de conferência, e casos de `HashControl` (integrados, recuperados).
 
 ## Origem e licença
 

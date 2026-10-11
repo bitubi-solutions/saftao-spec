@@ -16,16 +16,16 @@
     },
     {
       "id": "first-document-of-series",
-      "status": "por confirmar (mensagem termina em ';' quando o hash anterior é vazio)",
-      "source": "Proposta MinFin 2018 (hash anterior vazio no primeiro documento); terminador por analogia com a especificação portuguesa",
+      "status": "verificado (proposta)",
+      "source": "Proposta MinFin 2018, Anexo II, 1.º registo: a mensagem termina em ';' sem quebra de linha",
       "input": {
-        "InvoiceDate": "2019-01-11",
-        "SystemEntryDate": "2019-01-11T11:27:08",
-        "InvoiceNo": "FAC 001/1",
-        "GrossTotal": "1200.00",
+        "InvoiceDate": "2018-05-18",
+        "SystemEntryDate": "2018-05-18T11:22:19",
+        "InvoiceNo": "FAC 001/18",
+        "GrossTotal": "53.00",
         "previousHash": ""
       },
-      "expectedMessage": "2019-01-11;2019-01-11T11:27:08;FAC 001/1;1200.00;"
+      "expectedMessage": "2018-05-18;2018-05-18T11:22:19;FAC 001/18;53.00;"
     }
   ],
   "grossTotalFormat": [

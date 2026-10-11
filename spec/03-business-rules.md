@@ -125,6 +125,9 @@ Franquias, valores de garantia e retenções na fonte constam de campos próprio
 - Os documentos integrados ficam em séries/tipos **distintos e autónomos** dos da emissão própria, como cópias do original, e uma série **não mistura** origens.
 - `Hash` igual ao do sistema emissor; `SourceBilling = I`; `HashControl` conforme `04-signature.md`.
 
+### R-045 — Origem consistente numa série *(verificado (proposta); corroborado na prática)*
+Uma série/tipo de documento não mistura documentos de origens diferentes (por exemplo, `SourceBilling = P` e `I` na mesma série). Registo prático (não normativo): o validador do portal da AGT rejeitou uma cadeia de hash em que um documento `I` estava no meio de uma série de documentos `P`.
+
 ### R-043 — Recuperação de documentos manuais e de duplicados *(verificado (proposta))*
 Documentos recuperados de impressos manuais ou de duplicados (após falha do sistema) entram em **série específica**, de periodicidade anual ou superior, com numeração sequencial própria **iniciada em 1**, e `SourceBilling = M`. A data do documento é a do documento original. Documentos que referenciem um documento recuperado usam a série e o número **originais**. Após uma falha com reposição de cópia de segurança, as séries em uso são encerradas e criam-se novas.
 
