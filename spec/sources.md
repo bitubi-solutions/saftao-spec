@@ -18,7 +18,7 @@ Os PDFs **não** são copiados para este repo; indicam-se aqui a origem e o SHA-
 | Fonte | Uso |
 |---|---|
 | SAP, *SAF-T Digital Signature for Angola — Product Documentation*, 23/10/2020 | Confirma a cadeia de assinatura; origem da frase impressa com o ano (`/AGT/AAAA`) e dos documentos de movimento e conferência |
-| Issues #49 (2020) e #195 (2021) de [assoft-portugal/SAF-T-AO](https://github.com/assoft-portugal/SAF-T-AO/issues) | Corroboração prática: validador da AGT usado com chave de 1024 bits; validação da cadeia por série e falha quando um documento `I` entra numa série `P`. Não normativas |
+| Issues #49 (2020) e #195 (2021) de [assoft-portugal/SAF-T-AO](https://github.com/assoft-portugal/SAF-T-AO/issues) | Corroboração prática: validador da AGT a verificar a cadeia de hashes (#49, chave anexada com `1024` no nome); validação da cadeia por série e falha quando um documento `I` entra numa série `P`. Não normativas |
 | Especificações portuguesas equivalentes (2010–2014) | Só como comparação: usam os mesmos parâmetros. Não normativas |
 | Documentação "Registar Factura" da AGT (quiosque AGT, facturação electrónica) | RS256 na API de facturação electrónica; **fora do âmbito** |
 
