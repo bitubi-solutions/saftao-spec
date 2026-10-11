@@ -1,4 +1,5 @@
 {
   "valid": false,
+  "level": "schema",
   "reason": "Country do endereço da empresa é fixo AO."
 }

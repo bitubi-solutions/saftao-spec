@@ -1,4 +1,5 @@
 {
   "valid": false,
+  "level": "schema",
   "reason": "Ficheiro XML mal formado."
 }

@@ -19,11 +19,13 @@ Cada afirmação desta especificação tem um estado:
 
 | Estado | Significado |
 |---|---|
-| **verificado** | Confirmado numa fonte primária (XSD ou legislação) citada em `sources.md` |
-| **não verificado** | Vem de fonte secundária ou de inferência; **não** deve ser implementado como obrigatório antes de confirmação |
+| **verificado** | Confirmado em legislação publicada ou no XSD, citados em `sources.md` |
+| **verificado (proposta)** | Consta da *Proposta de Decreto Executivo* do Ministério das Finanças (2018); não confirmado que o texto final é idêntico |
+| **inferido** | Deduzido de evidência indirecta; não normativo |
+| **não verificado** | Vem de fonte secundária; **não** deve ser implementado como obrigatório antes de confirmação |
 | **por confirmar** | Ponto aberto conhecido, à espera de fonte |
 
-Implementadores devem tratar apenas o que está **verificado** como normativo.
+Implementadores devem tratar como normativo o que está **verificado**, e como *provavelmente correcto, mas a rever* o que está **verificado (proposta)**.
 
 ## Ordem de leitura
 
@@ -38,4 +40,5 @@ Implementadores devem tratar apenas o que está **verificado** como normativo.
 1. Gerar (ou escrever) o modelo a partir de `schema/SAFTAO1.01_01.xsd`.
 2. Implementar a validação contra o XSD.
 3. Implementar as regras de `03-business-rules.md` marcadas como verificadas.
-4. Passar todos os casos de `conformance/` (o campo `valid` de cada `.expected.json`). As mensagens de erro podem variar entre linguagens; só o resultado conta.
+4. Implementar a construção da mensagem de assinatura (`04-signature.md`); a assinatura propriamente dita só depois de o digest estar confirmado.
+5. Passar todos os casos de `conformance/` (o campo `valid` de cada `.expected.json` e os vectores de `signature/`). As mensagens de erro podem variar entre linguagens; só o resultado conta.

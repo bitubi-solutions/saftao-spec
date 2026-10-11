@@ -1,4 +1,5 @@
 {
   "valid": false,
+  "level": "schema",
   "reason": "AuditFileVersion tem de ser 1.01_01."
 }

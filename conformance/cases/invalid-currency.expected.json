@@ -1,4 +1,5 @@
 {
   "valid": false,
+  "level": "schema",
   "reason": "CurrencyCode do Header só admite AOA ou USD."
 }

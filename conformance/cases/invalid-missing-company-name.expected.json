@@ -1,4 +1,5 @@
 {
   "valid": false,
+  "level": "schema",
   "reason": "CompanyName é obrigatório no Header."
 }

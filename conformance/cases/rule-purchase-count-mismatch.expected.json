@@ -1,0 +1,8 @@
+{
+  "valid": false,
+  "level": "business-rule",
+  "rules": [
+    "R-009"
+  ],
+  "reason": "NumberOfEntries (3) não coincide com o número de documentos de compra (2). Passa o XSD."
+}

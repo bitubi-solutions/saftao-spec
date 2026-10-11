@@ -1,0 +1,8 @@
+{
+  "valid": false,
+  "level": "business-rule",
+  "rules": [
+    "R-013"
+  ],
+  "reason": "Nota de crédito de compra (PurchaseType NC) sem References. Passa o XSD."
+}

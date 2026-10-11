@@ -1,4 +1,5 @@
 {
   "valid": false,
+  "level": "schema",
   "reason": "TaxAccountingBasis fora dos valores admitidos."
 }

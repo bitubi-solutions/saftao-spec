@@ -1,0 +1,57 @@
+{
+  "description": "Vectores de construção da mensagem a assinar (não incluem a assinatura). Ver spec/04-signature.md.",
+  "messageConstruction": [
+    {
+      "id": "official-example",
+      "status": "verificado (proposta)",
+      "source": "Proposta de Decreto Executivo MinFin 2018, n.º 34, exemplo da mensagem a assinar",
+      "input": {
+        "InvoiceDate": "2019-01-11",
+        "SystemEntryDate": "2019-01-11T11:27:08",
+        "InvoiceNo": "FAC 001/9",
+        "GrossTotal": "1200.00",
+        "previousHash": "mYJEv4iGwLcnQbRD7dPs2uD1mX08XjXIKcGg3GEHmwMhmmGYusffIJjTdSITLX+uujTwzqmL/U5nvt6S9s8ijN3LwkJXsiEpt099e1MET/J8y3+Y1bN+K+YPJQiVmlQS0fXETsOPo8SwUZdBALt0vTo1VhUZKejACcjEYJ9G6nI="
+      },
+      "expectedMessage": "2019-01-11;2019-01-11T11:27:08;FAC 001/9;1200.00;mYJEv4iGwLcnQbRD7dPs2uD1mX08XjXIKcGg3GEHmwMhmmGYusffIJjTdSITLX+uujTwzqmL/U5nvt6S9s8ijN3LwkJXsiEpt099e1MET/J8y3+Y1bN+K+YPJQiVmlQS0fXETsOPo8SwUZdBALt0vTo1VhUZKejACcjEYJ9G6nI="
+    },
+    {
+      "id": "first-document-of-series",
+      "status": "por confirmar (mensagem termina em ';' quando o hash anterior é vazio)",
+      "source": "Proposta MinFin 2018 (hash anterior vazio no primeiro documento); terminador por analogia com a especificação portuguesa",
+      "input": {
+        "InvoiceDate": "2019-01-11",
+        "SystemEntryDate": "2019-01-11T11:27:08",
+        "InvoiceNo": "FAC 001/1",
+        "GrossTotal": "1200.00",
+        "previousHash": ""
+      },
+      "expectedMessage": "2019-01-11;2019-01-11T11:27:08;FAC 001/1;1200.00;"
+    }
+  ],
+  "grossTotalFormat": [
+    {
+      "id": "gross-total-two-decimals",
+      "status": "verificado (proposta)",
+      "input": "1200",
+      "expected": "1200.00"
+    },
+    {
+      "id": "gross-total-no-thousands-separator",
+      "status": "verificado (proposta)",
+      "input": "1234567.5",
+      "expected": "1234567.50"
+    },
+    {
+      "id": "gross-total-rounds-to-two-decimals",
+      "status": "verificado (proposta)",
+      "input": "1234.567",
+      "expected": "1234.57"
+    },
+    {
+      "id": "gross-total-zero",
+      "status": "verificado (proposta)",
+      "input": "0",
+      "expected": "0.00"
+    }
+  ]
+}
