@@ -4,6 +4,8 @@ Especificação e testes de conformidade partilhados das bibliotecas `saftao-*`,
 
 Este repo é a fonte de verdade das regras e dos casos de teste. Cada biblioteca (`saftao-java`, `saftao-python`, `saftao-csharp`, `saftao-php`, e depois `saftao-rust` e `saftao-c`) implementa a especificação de forma nativa e tem de passar os mesmos testes.
 
+> **Aviso.** Este projecto **não é um programa de facturação certificado** e **não foi avaliado, aprovado nem endossado pela AGT** (Administração Geral Tributária). Quem o integrar num software que emite documentos fiscais é responsável por cumprir os requisitos legais aplicáveis, incluindo a certificação do software e o registo como produtor. A assinatura incluída serve para teste e interoperabilidade. Fornecido "tal como está", sem garantias (ver licença).
+
 ## Estado
 
 **v0.2, rascunho.** Cobre a versão **1.01_01** do SAF-T (AO). Cada afirmação indica o seu estado de verificação; ver [`spec/00-overview.md`](spec/00-overview.md) e [`spec/sources.md`](spec/sources.md).
