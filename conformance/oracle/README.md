@@ -2,7 +2,7 @@
 
 Ficheiros SAF-T (AO) **sintéticos** (dados inventados), cada um a isolar **uma** observação de [`spec/06-validator-observations.md`](../../spec/06-validator-observations.md). Servem para descobrir, num validador externo, regras que o XSD e a lei não explicam.
 
-Todos passam o XSD (confirmado com `tools/validate.py`). Logo, **qualquer erro** que um validador externo dê a estes ficheiros vem de regras **além do esquema**. Ver `pack.json` para o que cada ficheiro faz e o que se espera.
+Os ficheiros `O-*` e `R-*` passam o XSD (confirmado com `tools/validate.py`): **qualquer erro** que um validador externo dê a estes vem de regras **além do esquema**. Os ficheiros `C-*` são **controlos** que **violam** o XSD de propósito: um validador de esquema tem de os rejeitar. Se não os rejeitar, não está a validar o esquema, e o resto dos resultados não conta. Ver `pack.json` para o que cada ficheiro faz e o que se espera.
 
 ## Regras de uso
 

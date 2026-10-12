@@ -12,10 +12,19 @@ from make_sales_sample import build
 M10 = ("M10", "Isento nos termos da alínea a) do nº1 do artigo 12.º do CIVA")
 M10_SEM_ACENTOS = ("M10", "Isento nos termos da alinea a) do n1 do artigo 12. do CIVA")
 
+# controlos que DEVEM falhar em qualquer validador de esquema (post = alteração ao texto do XML)
+CONTROLS = [
+ ("C-01-controlo-moeda-invalida", lambda x: x.replace("<CurrencyCode>AOA<", "<CurrencyCode>EUR<", 1), "CONTROLO: CurrencyCode EUR (o XSD só admite AOA ou USD).", "Tem de falhar: viola o XSD."),
+ ("C-02-controlo-campo-em-falta", lambda x: x.replace("<CompanyName>Empresa de Teste Sintetico</CompanyName>", "", 1), "CONTROLO: Header sem CompanyName (obrigatório).", "Tem de falhar: viola o XSD."),
+ ("C-03-controlo-formato-monetario", lambda x: x.replace("<TaxPayable>28.00<", "<TaxPayable>28.0<", 1), "CONTROLO: TaxPayable com uma casa decimal (o XSD exige duas).", "Tem de falhar: viola o XSD."),
+]
+
 CASES = [
  ("00-base", None, "Base: 2 facturas FT e 1 nota de crédito NC (com DebitAmount), IVA 14%, assinadas com a chave de teste, software 999/AGT/2026.", "Nada de errado no ficheiro. Anotar se o site reclama do número de software ou do hash (pode não conhecer a chave)."),
  ("00b-base-nao-validado", dict(validated=False), "Base com software '0' e Hash '0' (programa não validado).", "Nada de errado."),
  ("O-001-taxpayable-errado", dict(tax_payable_delta="1.00"), "TaxPayable da FT 2026A/1 aumentado em 1,00.", "O-001: esperado erro de cálculo de TaxPayable."),
+ ("O-001b-gross-incoerente", dict(ft1_gross_override="999.00"), "FT 2026A/1 com GrossTotal 999,00 (NetTotal 200,00 + TaxPayable 28,00 = 228,00).", "O-001: erro gritante de coerência de totais; se nem este falha, o site não verifica totais."),
+ ("O-001c-net-diferente-das-linhas", dict(ft1_net_override="1.00"), "FT 2026A/1 com NetTotal 1,00 (a linha vale 200,00).", "O-001: idem."),
  ("O-002a-desconto-deduzido", dict(discount="20.00"), "FT 2026A/1 com desconto de 20,00 já deduzido em UnitPrice e CreditAmount.", "O-002: esperado válido."),
  ("O-002b-desconto-nao-deduzido-no-preco", dict(discount="20.00", discount_unit_not_deducted=True), "Como o anterior, mas UnitPrice sem deduzir o desconto.", "O-002: esperado erro (UnitPrice/CreditAmount)."),
  ("O-003-totalcredit-errado", dict(total_credit_delta="1.00"), "TotalCredit da secção aumentado em 1,00.", "O-003: esperado erro de TotalCredit."),
@@ -41,6 +50,12 @@ if __name__ == "__main__":
         path = os.path.join(out, name + ".xml")
         open(path, "w", encoding="utf-8").write(build(opt))
         r = json.loads(subprocess.run([sys.executable, os.path.join(here, "validate.py"), xsd, path], capture_output=True, text=True).stdout)
+        rows.append((name, what, expect, r["valid"], (r["errors"][:1] or [{}])[0].get("message", "")))
+    for name, post, what, expect in CONTROLS:
+        path = os.path.join(out, name + ".xml")
+        open(path, "w", encoding="utf-8").write(post(build(None)))
+        r = json.loads(subprocess.run([sys.executable, os.path.join(here, "validate.py"), xsd, path], capture_output=True, text=True).stdout)
+        assert not r["valid"], name + " devia violar o XSD"
         rows.append((name, what, expect, r["valid"], (r["errors"][:1] or [{}])[0].get("message", "")))
     # latin-1
     lat = build(None).replace("Empresa de Teste Sintetico", "Empresa de Teste Sintético").replace('encoding="UTF-8"', 'encoding="ISO-8859-1"')

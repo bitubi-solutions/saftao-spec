@@ -8,6 +8,8 @@ Quem submeteu: ______
 | 00-base.xml | Base: 2 facturas FT e 1 nota de crédito NC (com DebitAmount), IVA 14%, assinadas com a chave de teste, software 999/AGT/2026. | Nada de errado no ficheiro. Anotar se o site reclama do número de software ou do hash (pode não conhecer a chave). | | |
 | 00b-base-nao-validado.xml | Base com software '0' e Hash '0' (programa não validado). | Nada de errado. | | |
 | O-001-taxpayable-errado.xml | TaxPayable da FT 2026A/1 aumentado em 1,00. | O-001: esperado erro de cálculo de TaxPayable. | | |
+| O-001b-gross-incoerente.xml | FT 2026A/1 com GrossTotal 999,00 (NetTotal 200,00 + TaxPayable 28,00 = 228,00). | O-001: erro gritante de coerência de totais; se nem este falha, o site não verifica totais. | | |
+| O-001c-net-diferente-das-linhas.xml | FT 2026A/1 com NetTotal 1,00 (a linha vale 200,00). | O-001: idem. | | |
 | O-002a-desconto-deduzido.xml | FT 2026A/1 com desconto de 20,00 já deduzido em UnitPrice e CreditAmount. | O-002: esperado válido. | | |
 | O-002b-desconto-nao-deduzido-no-preco.xml | Como o anterior, mas UnitPrice sem deduzir o desconto. | O-002: esperado erro (UnitPrice/CreditAmount). | | |
 | O-003-totalcredit-errado.xml | TotalCredit da secção aumentado em 1,00. | O-003: esperado erro de TotalCredit. | | |
@@ -21,4 +23,7 @@ Quem submeteu: ______
 | O-032-hash-adulterado.xml | Hash da FT 2026A/2 alterado nos últimos 4 caracteres. | O-032: esperado 'Hash está errado' (se o validador verificar a cadeia). | | |
 | O-030-numeracao-com-salto.xml | Série FT 2026A com numeração 1 e 3 (falta o 2). | O-030: ver se o validador exige numeração contínua. | | |
 | R-013-nc-sem-references.xml | NC sem References. | Em vendas, References é obrigatório em NC (DE 317/20 4.1.4.19.10). | | |
+| C-01-controlo-moeda-invalida.xml | CONTROLO: CurrencyCode EUR (o XSD só admite AOA ou USD). | Tem de falhar: viola o XSD. | | |
+| C-02-controlo-campo-em-falta.xml | CONTROLO: Header sem CompanyName (obrigatório). | Tem de falhar: viola o XSD. | | |
+| C-03-controlo-formato-monetario.xml | CONTROLO: TaxPayable com uma casa decimal (o XSD exige duas). | Tem de falhar: viola o XSD. | | |
 | O-023-encoding-latin1.xml | Declarado e codificado em ISO-8859-1, com 'é' no nome da empresa. | O-023: esperado erro de encoding. | | |

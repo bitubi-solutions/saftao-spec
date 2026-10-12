@@ -25,7 +25,7 @@ NS = "urn:OECD:StandardAuditFile-Tax:AO_1.01_01"
 def build(opt=None):
     """opt: dicionário de variações (ver os nomes abaixo)."""
     o = dict(validated=True, tax_payable_delta="0", discount=None, nc_debit="100.00", total_credit_delta="0",
-             nc_gross_override=None, tamper_hash=False, discount_unit_not_deducted=False, ft_side="C", ft2_no="FT 2026A/2", line_tax_pct="14.00", line_tax_code="NOR",
+             nc_gross_override=None, tamper_hash=False, discount_unit_not_deducted=False, ft_side="C", ft2_no="FT 2026A/2", ft1_gross_override=None, ft1_net_override=None, line_tax_pct="14.00", line_tax_code="NOR",
              exemption=None, customers=None, tax_region="AO", nc_refs=True, software_no=None)
     o.update(opt or {})
     soft = o["software_no"] or ("999/AGT/2026" if o["validated"] else "0")
@@ -70,6 +70,10 @@ def build(opt=None):
         tax_payable = q(tax + Decimal(o["tax_payable_delta"]) if typ == "FT" and no.endswith("/1") else tax)
         gross = q(net + tax)
         if typ == "NC" and o["nc_gross_override"]: gross = q(Decimal(o["nc_gross_override"]))
+        net_out = q(net)
+        if typ == "FT" and no.endswith("/1"):
+            if o["ft1_gross_override"]: gross = q(Decimal(o["ft1_gross_override"]))
+            if o["ft1_net_override"]: net_out = q(Decimal(o["ft1_net_override"]))
         gross_by_no[no] = gross
         series = no.split("/")[0]
         msg = ";".join([d, dt, no, str(gross), prev.get(series, "")])
@@ -82,7 +86,7 @@ def build(opt=None):
             f"<Period>5</Period><InvoiceDate>{d}</InvoiceDate><InvoiceType>{typ}</InvoiceType>"
             f"<SpecialRegimes><SelfBillingIndicator>0</SelfBillingIndicator><CashVATSchemeIndicator>0</CashVATSchemeIndicator><ThirdPartiesBillingIndicator>0</ThirdPartiesBillingIndicator></SpecialRegimes>"
             f"<SourceID>ADM</SourceID><SystemEntryDate>{dt}</SystemEntryDate><CustomerID>CF</CustomerID>{''.join(xml_lines)}"
-            f"<DocumentTotals><TaxPayable>{tax_payable}</TaxPayable><NetTotal>{q(net)}</NetTotal><GrossTotal>{gross}</GrossTotal></DocumentTotals></Invoice>")
+            f"<DocumentTotals><TaxPayable>{tax_payable}</TaxPayable><NetTotal>{net_out}</NetTotal><GrossTotal>{gross}</GrossTotal></DocumentTotals></Invoice>")
     tot_c = q(tot_c + Decimal(o["total_credit_delta"]))
     customers = o["customers"] or [("CF", "999999999", "Consumidor final")]
     cust_xml = "".join(

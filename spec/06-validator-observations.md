@@ -98,8 +98,12 @@ Registo dos testes feitos com o pacote `conformance/oracle/`. Cada resultado é 
 |---|---|---|---|
 | O-001 (`TaxPayable` errado) | saft.ao | 2026-10-12 | **não reproduzida**: aceitou o ficheiro sem mensagens |
 | O-002 (desconto/`UnitPrice`) | saft.ao | 2026-10-12 | **não reproduzida**: aceitou os dois ficheiros |
+| O-003 (`TotalCredit` da secção) | saft.ao | 2026-10-12 | **não reproduzida** |
+| O-005 (`DebitAmount` numa FT) | saft.ao | 2026-10-12 | **não reproduzida** |
+| O-006 (NC maior que a origem) | saft.ao | 2026-10-12 | **não reproduzida** |
+| O-010 (`ISE` com percentagem 14%) | saft.ao | 2026-10-12 | **não reproduzida** |
 
-O saft.ao **não** verifica estes cálculos, por isso não serve de oráculo para a família O-001 a O-004. Detalhes em `conformance/oracle/results/saft.ao-2026-10-12.md`. As restantes observações continuam por testar. Para a AGT, o único teste fiável é o validador de produtores do portal.
+O saft.ao aceitou **todos** os 10 ficheiros testados até agora. A hipótese mais simples é que só valida o esquema; está em verificação com controlos (ver `conformance/oracle/results/`). Até lá, **não serve de oráculo** para regras além do XSD. Detalhes em `conformance/oracle/results/saft.ao-2026-10-12.md`. As restantes observações continuam por testar. Para a AGT, o único teste fiável é o validador de produtores do portal.
 
 ## Como as bibliotecas devem usar isto
 

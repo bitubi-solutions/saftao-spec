@@ -21,6 +21,20 @@
     "xsd_error": ""
   },
   {
+    "file": "O-001b-gross-incoerente.xml",
+    "what": "FT 2026A/1 com GrossTotal 999,00 (NetTotal 200,00 + TaxPayable 28,00 = 228,00).",
+    "expect": "O-001: erro gritante de coerência de totais; se nem este falha, o site não verifica totais.",
+    "xsd_valid": true,
+    "xsd_error": ""
+  },
+  {
+    "file": "O-001c-net-diferente-das-linhas.xml",
+    "what": "FT 2026A/1 com NetTotal 1,00 (a linha vale 200,00).",
+    "expect": "O-001: idem.",
+    "xsd_valid": true,
+    "xsd_error": ""
+  },
+  {
     "file": "O-002a-desconto-deduzido.xml",
     "what": "FT 2026A/1 com desconto de 20,00 já deduzido em UnitPrice e CreditAmount.",
     "expect": "O-002: esperado válido.",
@@ -110,6 +124,27 @@
     "expect": "Em vendas, References é obrigatório em NC (DE 317/20 4.1.4.19.10).",
     "xsd_valid": true,
     "xsd_error": ""
+  },
+  {
+    "file": "C-01-controlo-moeda-invalida.xml",
+    "what": "CONTROLO: CurrencyCode EUR (o XSD só admite AOA ou USD).",
+    "expect": "Tem de falhar: viola o XSD.",
+    "xsd_valid": false,
+    "xsd_error": "Element '{urn:OECD:StandardAuditFile-Tax:AO_1.01_01}CurrencyCode': [facet 'enumeration'] The value 'EUR' is not an element of the set {'AOA', 'USD'}."
+  },
+  {
+    "file": "C-02-controlo-campo-em-falta.xml",
+    "what": "CONTROLO: Header sem CompanyName (obrigatório).",
+    "expect": "Tem de falhar: viola o XSD.",
+    "xsd_valid": false,
+    "xsd_error": "Element '{urn:OECD:StandardAuditFile-Tax:AO_1.01_01}CompanyAddress': This element is not expected. Expected is ( {urn:OECD:StandardAuditFile-Tax:AO_1.01_01}CompanyName )."
+  },
+  {
+    "file": "C-03-controlo-formato-monetario.xml",
+    "what": "CONTROLO: TaxPayable com uma casa decimal (o XSD exige duas).",
+    "expect": "Tem de falhar: viola o XSD.",
+    "xsd_valid": false,
+    "xsd_error": "Element '{urn:OECD:StandardAuditFile-Tax:AO_1.01_01}TaxPayable': [facet 'pattern'] The value '28.0' is not accepted by the pattern '\\d+(\\.\\d{2})'."
   },
   {
     "file": "O-023-encoding-latin1.xml",
