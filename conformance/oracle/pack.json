@@ -1,0 +1,114 @@
+[
+  {
+    "file": "00-base.xml",
+    "what": "Base: 2 facturas FT e 1 nota de crédito NC (com DebitAmount), IVA 14%, assinadas com a chave de teste, software 999/AGT/2026.",
+    "expect": "Nada de errado no ficheiro. Anotar se o site reclama do número de software ou do hash (pode não conhecer a chave).",
+    "xsd_valid": true,
+    "xsd_error": ""
+  },
+  {
+    "file": "00b-base-nao-validado.xml",
+    "what": "Base com software '0' e Hash '0' (programa não validado).",
+    "expect": "Nada de errado.",
+    "xsd_valid": true,
+    "xsd_error": ""
+  },
+  {
+    "file": "O-001-taxpayable-errado.xml",
+    "what": "TaxPayable da FT 2026A/1 aumentado em 1,00.",
+    "expect": "O-001: esperado erro de cálculo de TaxPayable.",
+    "xsd_valid": true,
+    "xsd_error": ""
+  },
+  {
+    "file": "O-002a-desconto-deduzido.xml",
+    "what": "FT 2026A/1 com desconto de 20,00 já deduzido em UnitPrice e CreditAmount.",
+    "expect": "O-002: esperado válido.",
+    "xsd_valid": true,
+    "xsd_error": ""
+  },
+  {
+    "file": "O-002b-desconto-nao-deduzido-no-preco.xml",
+    "what": "Como o anterior, mas UnitPrice sem deduzir o desconto.",
+    "expect": "O-002: esperado erro (UnitPrice/CreditAmount).",
+    "xsd_valid": true,
+    "xsd_error": ""
+  },
+  {
+    "file": "O-003-totalcredit-errado.xml",
+    "what": "TotalCredit da secção aumentado em 1,00.",
+    "expect": "O-003: esperado erro de TotalCredit.",
+    "xsd_valid": true,
+    "xsd_error": ""
+  },
+  {
+    "file": "O-005b-factura-com-debito.xml",
+    "what": "As FT usam DebitAmount em vez de CreditAmount.",
+    "expect": "O-005: esperado erro (crédito < débito) nas FT; a NC com DebitAmount na base é o contraponto.",
+    "xsd_valid": true,
+    "xsd_error": ""
+  },
+  {
+    "file": "O-006-nc-maior-que-origem.xml",
+    "what": "NC com GrossTotal (342,00) maior que o da FT referida (228,00).",
+    "expect": "O-006: esperado erro 'GrossTotal é maior que o documento de origem'.",
+    "xsd_valid": true,
+    "xsd_error": ""
+  },
+  {
+    "file": "O-010-ise-com-percentagem.xml",
+    "what": "TaxCode ISE com TaxPercentage 14,00.",
+    "expect": "O-010: esperado erro (ISE exige percentagem 0).",
+    "xsd_valid": true,
+    "xsd_error": ""
+  },
+  {
+    "file": "O-011a-isencao-texto-exacto.xml",
+    "what": "ISE, percentagem 0, M10 com o texto exacto da tabela oficial.",
+    "expect": "O-011: esperado válido.",
+    "xsd_valid": true,
+    "xsd_error": ""
+  },
+  {
+    "file": "O-011b-isencao-sem-acentos.xml",
+    "what": "O mesmo, com o texto do motivo sem acentos.",
+    "expect": "O-011: esperado 'TaxExemptionReason mal preenchido'.",
+    "xsd_valid": true,
+    "xsd_error": ""
+  },
+  {
+    "file": "O-015-regiao-cabinda.xml",
+    "what": "TaxCountryRegion AO-CAB (Cabinda) na tabela e nas linhas.",
+    "expect": "O-015: ver se o validador aceita AO-CAB.",
+    "xsd_valid": true,
+    "xsd_error": ""
+  },
+  {
+    "file": "O-020-nif-duplicado.xml",
+    "what": "Dois clientes com o mesmo CustomerTaxID (os documentos usam só CF).",
+    "expect": "O-020: ver se rejeita NIF repetido.",
+    "xsd_valid": true,
+    "xsd_error": ""
+  },
+  {
+    "file": "O-032-hash-adulterado.xml",
+    "what": "Hash da FT 2026A/2 alterado nos últimos 4 caracteres.",
+    "expect": "O-032: esperado 'Hash está errado' (se o validador verificar a cadeia).",
+    "xsd_valid": true,
+    "xsd_error": ""
+  },
+  {
+    "file": "R-013-nc-sem-references.xml",
+    "what": "NC sem References.",
+    "expect": "Em vendas, References é obrigatório em NC (DE 317/20 4.1.4.19.10).",
+    "xsd_valid": true,
+    "xsd_error": ""
+  },
+  {
+    "file": "O-023-encoding-latin1.xml",
+    "what": "Declarado e codificado em ISO-8859-1, com 'é' no nome da empresa.",
+    "expect": "O-023: esperado erro de encoding.",
+    "xsd_valid": true,
+    "xsd_error": ""
+  }
+]

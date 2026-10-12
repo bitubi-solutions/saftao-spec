@@ -23,6 +23,7 @@ Uma biblioteca que só valide o XSD passa os casos `schema` e falha os `business
 | Caso | Esperado | Nível | O que testa |
 |---|---|---|---|
 | `valid-purchase-invoices` | válido | schema | Ficheiro de referência de facturas de compra |
+| `valid-sales-base` | válido | schema | Ficheiro de vendas sintético (2 FT + 1 NC) |
 | `invalid-version` | inválido | schema | `AuditFileVersion` diferente de `1.01_01` |
 | `invalid-missing-company-name` | inválido | schema | `CompanyName` em falta no `Header` |
 | `invalid-currency` | inválido | schema | `CurrencyCode` fora de `AOA`/`USD` |
@@ -47,6 +48,10 @@ Os casos `schema` foram confirmados com o validador de referência (`tools/valid
 Cada vector tem `status`; ver `spec/04-signature.md`.
 
 `signature/signing-chain.json` tem uma **cadeia de três documentos com a assinatura esperada** (RSA 1024 bits, SHA-1, PKCS#1 v1.5, base64 de 172 caracteres) e uma **chave de teste** (apenas para estes vectores; nunca usar noutro contexto). Foram gerados com OpenSSL e confirmados com uma segunda implementação independente. Uma biblioteca passa se, com a mesma chave e os mesmos campos, produzir exactamente o `expectedHash` de cada documento.
+
+## Pacote para validadores externos (`oracle/`)
+
+Ficheiros sintéticos para **testes manuais** em validadores externos (ver `oracle/README.md`). Não fazem parte da conformance automática: servem para descobrir regras ocultas, e só depois viram casos de `cases/`.
 
 ## Próximos casos
 

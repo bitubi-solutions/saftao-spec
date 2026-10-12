@@ -1,0 +1,5 @@
+{
+  "valid": true,
+  "level": "schema",
+  "reason": "Ficheiro de vendas sintético (2 FT e 1 NC com IVA 14%), gerado por tools/make_sales_sample.py. Os dados são inventados; o NIF do emitente é o público do exemplo da AGT."
+}
