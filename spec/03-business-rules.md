@@ -304,14 +304,16 @@ Os documentos não contêm valores negativos; correcções fazem-se com notas de
 
 As regras de assinatura, `Hash` e `HashControl` estão em [`04-signature.md`](04-signature.md).
 
-## O que o texto legal não impõe (ou não encontrámos)
+## O que o texto legal não impõe, mas o validador da AGT verifica
 
-O DE 317/20 **não** afirma, nos campos lidos, as seguintes relações. Uma biblioteca **não deve** tratá-las como erro de validação; pode oferecê-las como **avisos** configuráveis.
+O DE 317/20 **não** afirma, nos campos lidos, as relações abaixo. Porém, **produtores reportam que o validador da AGT as verifica** (ver [`06-validator-observations.md`](06-validator-observations.md), observações O-001 a O-007). São, por isso, candidatas a verificação num **modo estrito** opcional, e **não** a erros por defeito:
 
-- Relação aritmética entre `NetTotal`, `TaxPayable` e `GrossTotal`, e tolerância de arredondamento.
-- Igualdade entre `TotalDebit` e `TotalCredit` do razão.
-- Relação entre `StartDate`/`EndDate` e as datas dos documentos e movimentos.
-- Soma das linhas = totais do documento.
+- Cálculo de `TaxPayable`, de `NetTotal` e de `GrossTotal` por documento, com os descontos já deduzidos nas linhas (O-001, O-002).
+- Valor das linhas e sua relação com preço e quantidade, com sensibilidade a arredondamento (O-004).
+- Soma dos `CreditAmount` ≥ soma dos `DebitAmount` por documento (O-005; a versão anterior do validador exigia `>`).
+- `GrossTotal` de uma nota de crédito ≤ `GrossTotal` do documento referido (O-006; contestado, com falsos positivos reportados).
+
+Continuam **sem fonte legal e sem observação**: igualdade entre `TotalDebit` e `TotalCredit` do razão, e relação entre `StartDate`/`EndDate` e as datas dos documentos.
 
 ## Ainda por confirmar
 

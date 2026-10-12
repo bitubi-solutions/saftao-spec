@@ -34,7 +34,8 @@ Implementadores devem tratar como normativo o que está **verificado**, e como *
 3. [`03-business-rules.md`](03-business-rules.md): regras de negócio.
 4. [`04-signature.md`](04-signature.md): assinatura e encadeamento.
 5. [`05-api.md`](05-api.md): contrato mínimo das bibliotecas.
-6. [`sources.md`](sources.md): fontes e o que está verificado.
+6. [`06-validator-observations.md`](06-validator-observations.md): o que produtores reportam sobre o validador da AGT (não normativo).
+7. [`sources.md`](sources.md): fontes e o que está verificado.
 
 ## Como implementar uma biblioteca
 
