@@ -35,3 +35,18 @@ Com os resultados, cada observação passa de "observada" a "confirmada em <vali
 ```bash
 python3 tools/make_oracle_pack.py conformance/oracle     # requer: cryptography
 ```
+
+## Ficheiros `nv/` (sem assinatura)
+
+`nv/` tem as mesmas variações com **software `0` e `Hash` `0`** (programa não validado), para que o número de software e o hash não mascarem os outros erros. O ficheiro `O-032` (hash adulterado) não tem versão `nv`. Os ficheiros da pasta principal estão assinados com a chave de teste e usam o número de software inventado `999/AGT/2026`, que um validador com a lista da AGT recusará.
+
+## Testar no validador da AGT (portal)
+
+Só o validador da AGT pode confirmar as observações de `06-validator-observations.md`. Decisão e responsabilidade são de quem testa; sugestão de procedimento:
+
+1. **Ler os termos de uso** do portal e confirmar que o teste repetido de ficheiros é permitido.
+2. **Usar apenas a função de validar do portal do produtor de software**, nunca a de entrega/submissão. Se o ecrã falar em "submeter", "entregar" ou emitir comprovativo, **parar**.
+3. **Usar o NIF da própria empresa que testa** em vez do NIF de exemplo da AGT: `python3 tools/make_oracle_pack.py conformance/oracle --nif <NIF>` (requer `cryptography`). Só dados inventados nos restantes campos.
+4. **Começar por `nv/00-base-nv.xml`**. Se o validador rejeitar a versão `nv` por completo, anotar a mensagem e passar à versão assinada, esperando erro do número de software.
+5. **Ficheiros indentados** dão números de linha úteis nas mensagens (os do pacote estão numa só linha).
+6. Registar a mensagem **exacta** em `results/` (ver acima).

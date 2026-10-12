@@ -3,7 +3,11 @@
 Cada ficheiro isola uma observação de spec/06-validator-observations.md. Depois de gerar, confirma-se que
 todos passam (ou não) o XSD, para que um erro do validador externo possa ser atribuído a regras além do esquema.
 
-Uso: python3 tools/make_oracle_pack.py conformance/oracle
+Uso: python3 tools/make_oracle_pack.py conformance/oracle [--nif NIF_DE_TESTE]
+
+Com --nif, o NIF do emitente e do produtor de software passa a ser o indicado (por exemplo o da própria empresa que testa).
+Os ficheiros em oracle/nv/ têm software "0" e Hash "0" (programa não validado): evitam que o número de software e o hash
+mascarem os restantes erros.
 """
 import json, os, re, subprocess, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -45,18 +49,25 @@ CASES = [
 
 if __name__ == "__main__":
     out = sys.argv[1]
+    nif = sys.argv[sys.argv.index("--nif") + 1] if "--nif" in sys.argv else None
+    def fix(x):
+        return x.replace("5103105000", nif) if nif else x
     os.makedirs(out, exist_ok=True)
     here = os.path.dirname(os.path.abspath(__file__))
     xsd = os.path.join(here, "..", "schema", "SAFTAO1.01_01.xsd")
     rows = []
     for name, opt, what, expect in CASES:
         path = os.path.join(out, name + ".xml")
-        open(path, "w", encoding="utf-8").write(build(opt))
+        open(path, "w", encoding="utf-8").write(fix(build(opt)))
+        if opt is not None and not opt.get("tamper_hash") and opt.get("validated", True):
+            os.makedirs(os.path.join(out, "nv"), exist_ok=True)
+            nv = dict(opt); nv["validated"] = False
+            open(os.path.join(out, "nv", name + "-nv.xml"), "w", encoding="utf-8").write(fix(build(nv)))
         r = json.loads(subprocess.run([sys.executable, os.path.join(here, "validate.py"), xsd, path], capture_output=True, text=True).stdout)
         rows.append((name, what, expect, r["valid"], (r["errors"][:1] or [{}])[0].get("message", "")))
     for name, post, what, expect in CONTROLS:
         path = os.path.join(out, name + ".xml")
-        open(path, "w", encoding="utf-8").write(post(build(None)))
+        open(path, "w", encoding="utf-8").write(fix(post(build(None))))
         r = json.loads(subprocess.run([sys.executable, os.path.join(here, "validate.py"), xsd, path], capture_output=True, text=True).stdout)
         assert not r["valid"], name + " devia violar o XSD"
         rows.append((name, what, expect, r["valid"], (r["errors"][:1] or [{}])[0].get("message", "")))

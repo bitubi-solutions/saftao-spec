@@ -108,7 +108,7 @@ Registo dos testes feitos com o pacote `conformance/oracle/`. Cada resultado é 
 | O-030 (numeração com salto) | saft.ao | 2026-10-12 | **não reproduzida** |
 | O-032 (hash adulterado) | saft.ao | 2026-10-12 | **não reproduzida** |
 
-O saft.ao aceitou **todos** os 17 ficheiros que passam o XSD e rejeitou os 3 controlos que o violam: **valida só o esquema** (`conformance/oracle/results/saft.ao-2026-10-12.md`). **Não serve de oráculo** para regras além do XSD, apesar de os seus módulos "Documentos" e "Totais" sugerirem mais. Detalhes em `conformance/oracle/results/saft.ao-2026-10-12.md`. As restantes observações continuam por testar. Para a AGT, o único teste fiável é o validador de produtores do portal.
+O saft.ao aceitou **todos** os 17 ficheiros que passam o XSD e rejeitou os 6 controlos que o violam (incluindo as restrições `xs:unique`/`xs:keyref`): **valida só o esquema, com as restrições de identidade** (`conformance/oracle/results/saft.ao-2026-10-12.md`). **Não serve de oráculo** para regras além do XSD, apesar de os seus módulos "Documentos" e "Totais" sugerirem mais. Detalhes em `conformance/oracle/results/saft.ao-2026-10-12.md`. As restantes observações continuam por testar. Para a AGT, o único teste fiável é o validador de produtores do portal.
 
 ## Como as bibliotecas devem usar isto
 
