@@ -78,7 +78,8 @@ A mensagem é o texto formado pela concatenação dos campos abaixo, **separados
 ## `HashControl` (chave de controlo)
 
 - Contém a **versão da chave privada** usada na assinatura (inteiro sequencial). *(verificado + verificado (proposta))*
-- Documento gerado por programa **não validado** pela AGT: `HashControl = "0"`. *(verificado: Decreto Executivo 317/20)*
+- Documento gerado por programa **não validado** pela AGT: `HashControl = "0"`; e `Hash = "0"` quando **não há obrigatoriedade de validação**. *(verificado: Decreto Executivo 317/20)*
+- Nas **compras** (`PurchaseInvoices`), o campo `Hash` (4.5.2.3) **não** é a assinatura de 172 caracteres: leva os 4 caracteres (posições 1, 11, 21 e 31) do `Hash` constantes do documento impresso, ou `0`. *(verificado: DE 317/20)*
 - Documentos **integrados** de outro sistema (`SourceBilling = I`): `Hash` **igual** ao do sistema emissor, e `HashControl` = `<n.º do certificado original>.<versão da chave original>`. *(verificado (proposta))*
 - Documentos integrados de programa **não validado**: `HashControl = "Não Validado pela AGT"` e `Hash = "0"`; não devem ser reimpressos. *(verificado (proposta))*
 - Documentos **recuperados de impressos manuais** (`SourceBilling = M`): `HashControl = <versão da chave>-<tipo>M <série manual>/<número manual>`, por exemplo `1-FTM ab/0001`. *(verificado (proposta))*

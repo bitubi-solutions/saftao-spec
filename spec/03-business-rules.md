@@ -21,8 +21,8 @@ Datas no formato `AAAA-MM-DD`; registos temporais no formato `AAAA-MM-DDThh:mm:s
 Não são aceites valores negativos. Saldos contabilísticos ou transacções com valores negativos são representados a débito ou a crédito (ajustando a representação), e os restantes campos de montantes ou valores são exportados em **valor absoluto**.
 
 ### R-032 — Tipo de ficheiro (`TaxAccountingBasis`) *(verificado: DP 312/18, anexo)*
-Códigos do tipo de ficheiro: `I` contabilidade integrada com facturação; `C` contabilidade; `F` facturação; `P` facturação parcial; `R` recibos; `S` autofacturação; `A` aquisição de bens e serviços; `Q` aquisição de bens e serviços integrada com a facturação.
-O XSD 1.01_01 admite também `E`, que **não** consta do anexo do DP 312/18 *(por confirmar o significado)*.
+Códigos do tipo de ficheiro: `I` contabilidade integrada com facturação; `C` contabilidade; `F` facturação; `P` facturação parcial; `R` recibos; `S` autofacturação; `A` aquisição de bens e serviços; `Q` aquisição de bens e serviços integrada com a facturação; `E` **facturação para o Estado** (este último acrescentado pelo DE 317/20 *(verificado: DE 317/20)*; não consta do DP 312/18).
+O tipo `R`, `S` e outros só se indicam se o programa emite *apenas* esse tipo de documento; caso contrário usa-se `C` ou `F` *(verificado: DE 317/20, nota (a) ao campo 1.4)*.
 
 ### R-033 — Tabelas por tipo de ficheiro *(verificado: DP 312/18, anexo)*
 | Tipo | Tabelas |
@@ -44,6 +44,161 @@ O SAF-T (AO) é gerado para um **período anual de tributação**, total ou parc
 
 ### R-035 — Completude da exportação *(verificado (proposta))*
 O ficheiro contém todos os elementos obrigatórios das tabelas aplicáveis ao tipo de ficheiro **e** todos os campos opcionais que tenham valor na base de dados. Os elementos indicados nas notas técnicas como únicos têm de ter valores únicos dentro da sua tabela.
+
+## Ficheiro, cabeçalho e tabelas auxiliares
+
+### R-036 — Obrigatoriedade *(verificado: DE 317/20)*
+Na coluna "Obrigatório" do anexo: `*` campo de preenchimento obrigatório; `#` campo de escolha alternativa ou dependente de condições; **em branco**, campo opcional que **deve** ser preenchido sempre que a informação exista no repositório de dados da aplicação, mediante prova documental.
+
+### R-037 — Autofacturação *(verificado: DE 317/20)*
+A geração do ficheiro de autofacturação é da responsabilidade do **efectivo emitente** (o cliente que se autofactura), que o disponibiliza sempre que ao fornecedor seja exigido o SAF-T. O ficheiro contém: `Header` com os campos 1.2 a 1.8 com os dados do **fornecedor** e `TaxAccountingBasis = S`; `Customer` com os dados do **emitente**; `Product` com os produtos dos documentos; e `SalesInvoices` com os documentos do fornecedor em que `InvoiceStatus = S`.
+
+### R-038 — Exportação de vários meses *(verificado: DE 317/20)*
+Ao exportar vários meses, aceita-se, em casos justificados, que as tabelas 2.2 a 2.5 (e, em aplicações integradas, também 2.1 e 3) sejam exportadas **uma só vez**, no último período extraído.
+
+### R-039 — Ficheiros independentes *(verificado: DE 317/20)*
+Se a contabilidade e a facturação geram ficheiros independentes, ambos contêm as tabelas **comuns** (Header, Customer, TaxTable e Payments, quando existam) e cada um a sua informação específica: contabilidade (2.1 contas, 2.3 fornecedores, 3 movimentos); facturação (2.3 fornecedores, 2.4 produtos, 4.1 vendas, 4.3 conferência).
+
+### R-050 — Cabeçalho: identificação *(verificado: DE 317/20)*
+- `TaxRegistrationNumber` (1.3): NIF angolano, **sem espaços e sem prefixo de país**.
+- `FiscalYear` (1.8): aplicam-se as regras do Código do Imposto Industrial quando o período contabilístico coincide com o ano civil.
+- `CurrencyCode` (1.11): moeda padrão dos campos monetários; **"AOA"**. O XSD admite também `USD`; o DE 317/20 manda preencher `AOA`.
+- `DateCreated` (1.12): data de criação do ficheiro XML.
+- `TaxEntity` (1.13): no ficheiro de **facturação**, o estabelecimento (posto de venda) a que respeita o ficheiro, ou `Global`; nos ficheiros de **contabilidade ou integrados**, `Sede`.
+- `ProductCompanyTaxID` (1.14): NIF da entidade produtora do software.
+- `SoftwareValidationNumber` (1.15): `NNN/AGT/AAAA`; `0` se não aplicável.
+- `ProductID` (1.16): `Nome da aplicação/Nome da empresa produtora do software`.
+- `ProductVersion` (1.17): versão da aplicação que produz o ficheiro.
+
+### R-060 — Plano de contas (`GeneralLedgerAccounts`) *(verificado: DE 317/20)*
+- Exporta-se o plano previsto no sistema de normalização contabilística e disposições do respectivo sector. **Não** se exportam registos das **classes** de contas.
+- Constam **todas** as contas, incluindo as integradoras, **até às contas do Razão**.
+- Em contas agregadoras com subcontas devedoras e credoras, evidenciam-se na agregadora os saldos devedores **e** credores.
+- `OpeningDebitBalance`/`OpeningCreditBalance`: saldos do **início** do período de tributação. `ClosingDebitBalance`/`ClosingCreditBalance`: saldos do **fim** do período ou da data de geração, se anterior.
+- `GroupingCategory`: `GR` conta de 1.º grau da contabilidade geral; `GA` agregadora/integradora geral; `GM` de movimento geral; `AR`, `AA`, `AM` os equivalentes da contabilidade analítica.
+- Excepto contas de 1.º grau, indica-se a conta agregadora (`GroupingCode`) do grau imediatamente superior, **com a mesma estrutura** do `AccountID`.
+
+### R-061 — Clientes (`Customer`) *(verificado: DE 317/20)*
+- Contém todos os registos movimentados no período e os **implícitos** nos movimentos que não constem do ficheiro de clientes da aplicação (por exemplo, uma factura só com o nome e NIF do cliente: exporta-se como cliente).
+- **Unicidade:** não pode haver mais de um registo com o mesmo `CustomerID`.
+- Um cliente já existente, com documentos emitidos e **sem NIF**, **não pode ter o nome alterado**; a limitação cessa quando se averba o NIF.
+- **Consumidor final:** cria-se um cliente genérico com a designação `Consumidor final` e NIF `999999999`.
+- `AccountID`: conta-corrente do cliente no plano de contas, se definida; senão `Desconhecido`.
+- Morada: campos preenchidos com `Desconhecido` em sistemas não integrados quando a informação não é conhecida, e nas operações com consumidor final. `Country` segue a ISO 3166-1 alpha-2.
+- `SelfBillingIndicator`: `1` se há acordo de autofacturação entre cliente e fornecedor, `0` caso contrário.
+
+### R-062 — Fornecedores (`Supplier`) *(verificado: DE 317/20)*
+Contém todos os registos movimentados no período. **Unicidade** do `SupplierID`. `AccountID`: conta-corrente do fornecedor no plano de contas, se definida; senão `Desconhecido`. O NIF não leva prefixo de país.
+
+### R-063 — Produtos e serviços (`Product`) *(verificado: DE 317/20)*
+- Catálogo de produtos e tipos de serviço movimentados, mais os registos **implícitos** nos movimentos que não existam na tabela da aplicação (por exemplo, uma linha de portes: exporta-se como produto).
+- Incluem-se também impostos, taxas, ecotaxas e encargos parafiscais mencionados no documento, que contribuam ou não para a base tributável do IVA ou do IS, **excepto IVA e IS**, que vão para a `TaxTable`.
+- O programa **não pode permitir alterar** a descrição de um produto já com documentos emitidos.
+- `ProductType`: `P` produtos; `S` serviços; `O` outros (portes debitados, adiantamentos recebidos, alienação de activos); `E` impostos especiais de consumo (IEC); `I` impostos, taxas e encargos parafiscais, excepto IVA, IS e IEC.
+- `ProductNumberCode`: o código EAN (código de barras); se não existir, o valor de `ProductCode`.
+- `ProductDescription`: denominação usual do bem ou serviço, com os elementos necessários para determinar a taxa de imposto aplicável.
+
+### R-070 — Tabela de impostos (`TaxTable`) *(verificado: DE 317/20)*
+- `TaxType`: `IVA`, `IS` (imposto do selo) ou `NS` (não sujeição a IVA ou IS).
+- `TaxCode`: se `IVA`: `NOR` taxa normal, `ISE` isenta, `OUT` outros (regimes especiais). Se `IS`: o código da verba, ou `ISE`. Se não sujeição: `NS`. Em recibos emitidos sem imposto discriminado: `NA`.
+- `TaxCountryRegion`: ISO 3166-1 alpha-2; para Cabinda, `AO-CAB` (espaço fiscal da região de Cabinda).
+- `TaxExpirationDate`: última data legal de aplicação da taxa, se esta mudar durante o período.
+- `TaxPercentage`: obrigatório se o imposto é uma percentagem. `TaxAmount`: obrigatório se é uma verba fixa de imposto do selo. Em isenção ou não sujeição, o valor é `0`.
+
+## Razão (movimentos contabilísticos)
+
+### R-080 — Movimentos *(verificado: DE 317/20)*
+- Registam-se os movimentos do período de exportação. **Não** se exportam movimentos de **abertura**: estão reflectidos nos saldos de abertura do plano de contas (R-060).
+- `TransactionID` (3.4.3.1): único e correspondente ao número de documento contabilístico, formado por **data do documento, identificador do diário e número de arquivo do documento**, separados por espaços (`TransactionDate`, `JournalID`, `DocArchivalNumber`).
+- `Period` (3.4.3.3): número do mês do período de tributação, de `1` a `12`, contado desde o início do período; `13` a `16` para movimentos do último mês relacionados com o apuramento do resultado (inventários, depreciações, ajustamentos, apuramento de resultados).
+- `TransactionDate`: data impressa no documento de suporte. `GLPostingDate`: data relevante para efeitos contabilísticos. `DocArchivalNumber`: número do documento dentro do diário, que permita aceder ao documento de origem.
+- `CustomerID` é **obrigatório** se o cliente é não residente ou a transacção é uma venda que deva figurar no anexo/declaração anual ou no anexo I da declaração periódica de IVA. `SupplierID` é obrigatório se o fornecedor é não residente ou a compra deve figurar no anexo/declaração anual. Cada um indica a chave do registo em `Customer`/`Supplier`.
+- Em cada linha: `RecordID` (chave única da linha no documento) e `SourceDocumentID` (tipo e número do documento comercial relacionado; em aplicações integradas, a numeração do campo de origem).
+
+## Documentos comerciais: regras comuns
+
+### R-090 — Tabelas de documentos *(verificado: DE 317/20)*
+- **Não se exportam linhas sem relevância fiscal** (descrições técnicas, instruções de montagem, condições de garantia).
+- O **código interno do tipo de documento** não pode ser usado em tipos de documento diferentes, qualquer que seja a tabela.
+- Cada série tem numeração **pelo menos anual**.
+- **Linhas** exportadas **pela mesma ordem** que no documento original.
+- `Reason` (nos estados): razão da alteração de estado do documento.
+- `Hash` e `HashControl`: ver `04-signature.md`. `Hash` fica `0` quando **não há obrigatoriedade de validação**; `HashControl` fica `0` se o documento foi gerado por **programa não validado**.
+- `TransactionID` no documento comercial: **obrigatório** em sistemas integrados de contabilidade e facturação (mesmo que o tipo de ficheiro não contenha as tabelas contabilísticas), quando o documento dá origem a registo contabilístico.
+
+### R-091 — Linhas e totais (comum a vendas, movimento, conferência e recibos) *(verificado: DE 317/20)*
+- `DebitAmount`: valor da linha **sem imposto**, dos documentos a lançar a **débito** na conta de vendas, **deduzido** de descontos de linha e de cabeçalho. `CreditAmount`: o equivalente a **crédito**.
+- `UnitPrice`: preço unitário sem imposto, **deduzido** de descontos; `0.00` quando não valorizado na base de dados.
+- `TaxBase`: valor tributável unitário que **não concorre** para o `NetTotal`; é a base de cálculo dos impostos da linha. O sinal com que o imposto concorre para o `TaxPayable` resulta de a linha ter `DebitAmount` ou `CreditAmount`. Se há obrigatoriedade de preencher `TaxBase`, `UnitPrice` fica `0.00`.
+- `SettlementAmount` (desconto de linha): reflecte **todos** os descontos (a proporção dos globais e os da própria linha) que afectam o `GrossTotal`.
+- `IECAmount`: montante do imposto especial de consumo contido na base tributável da linha, quando não está discriminado em linha independente com `ProductType = E`.
+- `Tax` (imposto da linha): `TaxType` (`IVA`, `IS`, `NS`), `TaxCode` (como R-070), `TaxPercentage` (obrigatório se percentagem; refere-se ao `DebitAmount` ou `CreditAmount`; `0` em isenção ou não sujeição) e `TaxAmount` (obrigatório em verba fixa de imposto do selo; **multiplicado pela `Quantity` concorre para o `TaxPayable`**).
+- `TaxExemptionReason` e `TaxExemptionCode`: **obrigatórios** quando `TaxPercentage` ou `TaxAmount` são `0`; indicam o preceito legal e o código do motivo; preenchem-se também nos casos de **não sujeição**.
+- `Settlement` (acordos): `SettlementDiscount` regista acordos de desconto **futuro**; `SettlementAmount` é o valor acordado para esse desconto e **não afecta** o valor presente do `GrossTotal`.
+- `PaymentMechanism`: `CC` cartão de crédito; `CD` cartão de débito; `CH` cheque bancário; `CI` crédito documentário internacional; `CO` cheque ou cartão oferta; `CS` compensação de saldos em conta corrente; `DE` dinheiro electrónico; `MB` referências de pagamento para Multicaixa; `NU` numerário; `OU` outros meios; `PR` permuta de bens; `TB` transferência bancária ou débito directo autorizado. Em pagamentos mistos indicam-se os montantes por meio e data.
+- `WithholdingTax`: `WithholdingTaxType` indica o imposto retido (`IRT`, `II`, `IS`, `IVA`, `IPU`, `IAC`, `OU`); `WithholdingTaxDescription` o normativo legal, ou o código da verba se for `IS`.
+
+## Documentos de venda (`SalesInvoices`)
+
+### R-100 — Conteúdo e anulação *(verificado: DE 317/20)*
+- Constam **todos** os documentos de venda e rectificativos emitidos, **incluindo os anulados** (`A`), para permitir verificar a sequencialidade de cada série.
+- **Anulação** (`InvoiceStatus` de `N` para `A`) só é possível em **programa validado pela AGT**, e deve servir **apenas** para rectificar dados de cabeçalho (erro no nome ou NIF do cliente). Em qualquer outro caso emite-se **nota de crédito**.
+- O software coloca uma **marca de água "Anulado"** na impressão e reimpressão, e **alerta** o utilizador se o SAF-T relativo ao documento já foi exportado.
+- Documento anulado por **emissão inválida**: o original **nunca** fica na posse do cliente, mantém-se no arquivo do emitente.
+
+### R-101 — Tipos de documento de venda *(verificado: DE 317/20)*
+`InvoiceType`: `FT` factura; `FR` factura/recibo; `GF` factura genérica; `FG` factura global; `AC` aviso de cobrança; `AR` aviso de cobrança/recibo; `ND` nota de débito; `NC` nota de crédito; `AF` factura/recibo (autofacturação); `TV` talão de venda. No **sector segurador**, quando o documento não conste em `WorkingDocuments`, admitem-se ainda tipos adicionais (o XSD lista `RP`, `RE`, `CS`, `LD`, `RA`).
+
+### R-102 — Indicadores e actividade *(verificado: DE 317/20)*
+- `SelfBillingIndicator` (4.1.4.9.1): `1` se respeita a autofacturação, `0` caso contrário.
+- `CashVATSchemeIndicator` (4.1.4.9.2): `1` se há adesão (ao regime de IVA de caixa), `0` caso contrário.
+- `ThirdPartiesBillingIndicator` (4.1.4.9.3): `1` se a facturação é emitida em nome e por conta de terceiros, `0` caso contrário. *O XSD admite os valores `0` a `3`; o DE 317/20 só descreve `0` e `1` (por confirmar o significado de `2` e `3`).*
+- `CAECode`: código CAE da actividade relacionada com a emissão do documento.
+
+### R-103 — Notas de crédito e referências *(verificado: DE 317/20)*
+- `References` (4.1.4.19.10): **obrigatório** quando `InvoiceType = NC`. `Reference` é o identificador único da factura referida (estrutura de numeração do sistema de origem) e `Reason` o motivo.
+- `OrderReferences` (4.1.4.19.2): **obrigatório** quando a nota de crédito (`NC`) respeita a **documento do ano anterior**; `OriginatingON` indica o tipo, a série e o número do documento que suporta a emissão, e `OrderDate` a sua data. Se o documento está contido no SAF-T, usa-se a numeração do campo de origem.
+
+### R-104 — Entrega *(verificado: DE 317/20)*
+Local e data de descarga onde os artigos são colocados à disposição do cliente, ou de quem este indicar em operações triangulares; nestas, indicam-se o local de entrega e o NIF de quem recebeu. No sector segurador, as datas de entrega/recolha indicam o **fim** e o **início** do período de cobertura do risco. `VehicleNumber` (matrícula do veículo ou meio de expedição); `SerialNumber`: número de série do produto (VIN, IMEI, ISSN, ISAN).
+
+## Movimentos de mercadorias (`MovementOfGoods`)
+
+### R-110 — Conteúdo *(verificado: DE 317/20)*
+- Exportam-se os **documentos de transporte** (guias de transporte, de remessa) que sirvam como tal.
+- **Não** se exportam aqui documentos que devam constar de `SalesInvoices` e que também serviram de transporte (por exemplo, facturas).
+- `MovementType`: `GR`, `GT`, `GA`, `GD` (valores do XSD; o DE 317/20 lido não os descreve por extenso).
+- `CustomerID`: se o destinatário não é conhecido, usa-se o cliente genérico de R-061. `SupplierID`: em guias de devolução, ou de transporte de bens produzidos ou montados sob encomenda com materiais fornecidos pelo dono da obra (trabalho a feitio).
+- Documentos **não valorizados** na base de dados: os campos monetários (`UnitPrice`, `GrossTotal`, `TaxPayable`, `NetTotal`, etc.) levam `0.00`. A estrutura de valores só se cria nos documentos valorizados.
+- `ARCNo` (4.2.3.21.16.1, código de referência administrativo ou D.U.): preenche-se com o código atribuído após a validação do documento administrativo.
+- Existe um campo (4.2.3.2, sem correspondência no XSD) a preencher com `0` **até à sua regulamentação**.
+
+## Documentos de conferência (`WorkingDocuments`)
+
+### R-120 — Conteúdo *(verificado: DE 317/20)*
+- Exportam-se **quaisquer outros** documentos emitidos, independentemente da designação, susceptíveis de apresentação ao cliente para conferência de mercadorias ou de prestação de serviços, mesmo que objecto de facturação posterior. **Não** se exportam os que devam constar de `SalesInvoices` ou de `MovementOfGoods`.
+- `WorkType`: `CM` consultas de mesa; `GC` guia de consignação; `GR` guia de remessa; `NR` nota de remessa; `FO` folhas de obra; `NE` nota de encomenda; `OU` outros; `OR` orçamentos; `PP` pró-forma; `DC` documentos emitidos susceptíveis de apresentação ao cliente para conferência. No sector segurador, tipos adicionais (o XSD lista `PF`, `RP`, `RE`, `CS`, `LD`, `RA`).
+- `CAECode`: código CAE da actividade relacionada com a emissão. Campos monetários não valorizados na base de dados: `0.00`.
+
+## Recibos (`Payments`)
+
+### R-130 — Conteúdo *(verificado: DE 317/20)*
+- Exportam-se os recibos criados **após a entrada em vigor** desta estrutura, dos tipos de `PaymentType`: `RC` recibo emitido; `AR` aviso de cobrança/recibo; `RG` outros recibos emitidos.
+- Cada linha indica o **tipo, série e número** da factura ou documento rectificativo a que respeita o pagamento (`SourceDocumentID`), e a **data** desse documento. Se está contido no SAF-T, usa-se a mesma numeração.
+- A estrutura de impostos gera-se também em qualquer outro recibo que **discrimine** impostos (`TaxType`).
+- `GrossTotal` do recibo **não** reflecte retenções na fonte (`WithholdingTax`).
+- `PaymentMechanism` e `WithholdingTax`: ver R-091.
+
+## Compras (`PurchaseInvoices`)
+
+### R-140 — Conteúdo *(verificado: DE 317/20)*
+- Produz-se um **ficheiro independente** de aquisição de bens e serviços (tipos `A` ou `Q`).
+- `PurchaseType`: `FT`, `FR`, `GF`, `FG`, `AC`, `AR`, `AF`, `TV`, `NL` nota de liquidação, `NC` nota de crédito; e `RC` recibo, **só** para contribuintes no **regime de caixa**.
+- `Hash` (4.5.2.3): os **4 valores** (posições 1, 11, 21 e 31) do `Hash` constantes no documento impresso, ou `0` se não houver esta informação. Em compras **não** é a assinatura de 172 caracteres.
+- `DeductibleTaxType` (4.5.2.9.4.4, tipo de IVA dedutível): `MFI` meios fixos e investimentos; `INV` existências/inventário; `OBC` outros bens de consumo; `SERV` serviços; `IMPT` importação; `SCE` serviços contratados no estrangeiro. Acompanha `DeductiblePercentage` (percentagem de imposto deduzido).
+- `WithholdingTax`: `IVA` quando sujeito a retenção/cativação; indica-se o normativo legal ou a percentagem aplicável.
+- `References` (ver R-013) é obrigatório em notas de crédito.
+
 
 ## Contagens e somas de controlo
 
@@ -76,9 +231,10 @@ Cada movimento (`Transaction`) tem, em `Lines`, **pelo menos uma linha a débito
 
 ## Identificação de documentos
 
-### R-010 — Formato de identificação única *(verificado: DE 317/20; verificado (proposta))*
-`InvoiceNo` (4.1.4.1), `DocumentNumber` (4.2.3.1, 4.3.4.1) e `PaymentRefNo` (4.4.4.1) são texto até 60 caracteres compostos por: tipo de documento (`InvoiceType`, `MovementType`, `WorkType` ou `PaymentType`), um espaço, o código interno do tipo de documento atribuído pela aplicação com o identificador da série, uma barra `/` e o número sequencial dentro da série.
-A proposta MinFin descreve a forma `<código interno> <série>/<sequência>` com o padrão `([a-zA-Z0-9./_-])+ ([a-zA-Z0-9]*/[0-9]+)`; exemplo da proposta: `FAC 001/9`. *Os dois textos diferem na redacção (o primeiro inclui o tipo de documento no início); a forma exacta de compor o início está **por confirmar**. O padrão da proposta é o que os vectores de assinatura usam.*
+### R-010 — Formato de identificação única *(verificado: DE 317/20 e XSD)*
+`InvoiceNo` (4.1.4.1), `DocumentNumber` (4.2.3.1, 4.3.4.1) e `PaymentRefNo` (4.4.4.1) são texto até 60 caracteres: **tipo do documento, um espaço, o identificador da série (que inclui o código interno do tipo atribuído pela aplicação), uma barra `/` e o número sequencial dentro da série**.
+O XSD impõe o padrão `[^ ]+ [^/^ ]+/[0-9]+` (por exemplo, `FT 2019A1/12360`, como no exemplo oficial). A proposta MinFin (2018) descreve `([a-zA-Z0-9./_-])+ ([a-zA-Z0-9]*/[0-9]+)`; o padrão do XSD, mais recente, prevalece.
+Nas **compras** (`PurchaseInvoices`) o `InvoiceNo` é o número original do documento do fornecedor, em texto livre (ver R-012).
 
 ### R-011 — Unicidade *(verificado: DE 317/20)*
 Não podem existir registos com a mesma identificação. O mesmo código interno de tipo de documento **não** pode ser usado para tipos de documento diferentes.
@@ -138,11 +294,18 @@ Os documentos não contêm valores negativos; correcções fazem-se com notas de
 
 As regras de assinatura, `Hash` e `HashControl` estão em [`04-signature.md`](04-signature.md).
 
-## Ainda por especificar ou confirmar
+## O que o texto legal não impõe (ou não encontrámos)
 
-- **Relação aritmética** entre `NetTotal`, `TaxPayable` e `GrossTotal`, e a tolerância de arredondamento: o anexo não a impõe no trecho lido. *(por confirmar)*
-- **Equilíbrio** entre `TotalDebit` e `TotalCredit` no razão: não afirmado no trecho lido. *(por confirmar)*
-- **Regras de linha** (cálculo de impostos, descontos, isenções e respectivos códigos `M..`) e das tabelas de impostos e produtos. *(por transcrever do DE 317/20)*
-- **`Payments`**: regras de `PaymentMechanism`, `WithholdingTax` e relação com documentos pagos. *(por transcrever)*
-- **Datas dentro do período**: relação entre `StartDate`/`EndDate` e as datas dos documentos e movimentos (`Period`). *(por transcrever)*
+O DE 317/20 **não** afirma, nos campos lidos, as seguintes relações. Uma biblioteca **não deve** tratá-las como erro de validação; pode oferecê-las como **avisos** configuráveis.
+
+- Relação aritmética entre `NetTotal`, `TaxPayable` e `GrossTotal`, e tolerância de arredondamento.
+- Igualdade entre `TotalDebit` e `TotalCredit` do razão.
+- Relação entre `StartDate`/`EndDate` e as datas dos documentos e movimentos.
+- Soma das linhas = totais do documento.
+
+## Ainda por confirmar
+
 - Texto final em vigor das regras marcadas **(proposta)**.
+- Significado exacto dos tipos de movimento `GT`, `GA`, `GD` (o XSD define-os; o DE 317/20 lido não os descreve por extenso).
+- Tabelas de cada tipo de ficheiro para `P` e `E`.
+- Códigos de motivo de isenção `M..` (lista de códigos): o anexo remete para tabela própria e o repo de origem tem `TaxExemptions.xml/json`, ainda não incluídos nesta spec.
