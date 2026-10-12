@@ -140,6 +140,27 @@
     "xsd_error": "Element '{urn:OECD:StandardAuditFile-Tax:AO_1.01_01}CompanyAddress': This element is not expected. Expected is ( {urn:OECD:StandardAuditFile-Tax:AO_1.01_01}CompanyName )."
   },
   {
+    "file": "C-04-controlo-customerid-duplicado.xml",
+    "what": "CONTROLO: dois Customer com o mesmo CustomerID (xs:unique do XSD).",
+    "expect": "Tem de falhar num validador que aplique as restrições de identidade do XSD.",
+    "xsd_valid": false,
+    "xsd_error": "Element '{urn:OECD:StandardAuditFile-Tax:AO_1.01_01}Customer': Duplicate key-sequence ['CF'] in unique identity-constraint '{urn:OECD:StandardAuditFile-Tax:AO_1.01_01}CustomerIDConstraint'."
+  },
+  {
+    "file": "C-05-controlo-customerid-inexistente.xml",
+    "what": "CONTROLO: factura com CustomerID que não existe em Customer (xs:keyref do XSD).",
+    "expect": "Tem de falhar num validador que aplique as restrições de identidade do XSD.",
+    "xsd_valid": false,
+    "xsd_error": "Element '{urn:OECD:StandardAuditFile-Tax:AO_1.01_01}Invoice': No match found for key-sequence ['XX'] of keyref '{urn:OECD:StandardAuditFile-Tax:AO_1.01_01}InvoiceCustomerIDConstraint'."
+  },
+  {
+    "file": "C-06-controlo-invoiceno-duplicado.xml",
+    "what": "CONTROLO: dois documentos com o mesmo InvoiceNo (xs:unique do XSD).",
+    "expect": "Tem de falhar num validador que aplique as restrições de identidade do XSD.",
+    "xsd_valid": false,
+    "xsd_error": "Element '{urn:OECD:StandardAuditFile-Tax:AO_1.01_01}Invoice': Duplicate key-sequence ['FT 2026A/1'] in unique identity-constraint '{urn:OECD:StandardAuditFile-Tax:AO_1.01_01}InvoiceNoConstraint'."
+  },
+  {
     "file": "C-03-controlo-formato-monetario.xml",
     "what": "CONTROLO: TaxPayable com uma casa decimal (o XSD exige duas).",
     "expect": "Tem de falhar: viola o XSD.",

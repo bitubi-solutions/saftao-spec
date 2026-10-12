@@ -31,6 +31,10 @@ python3 -I tools/xsd_to_md.py schema/SAFTAO1.01_01.xsd > spec/02-fields.md
 python3 tools/validate.py schema/SAFTAO1.01_01.xsd ficheiro.xml
 ```
 
+## Aviso sobre validadores de terceiros
+
+Testámos o validador gratuito [saft.ao](https://saft.ao) com 20 ficheiros sintéticos: **valida só o esquema XSD**. Aceitou ficheiros com hash adulterado, numeração com salto e totais incoerentes. **Passar no saft.ao não prova que o ficheiro passa o validador da AGT.** Detalhes em [`conformance/oracle/results/`](conformance/oracle/results/saft.ao-2026-10-12.md).
+
 ## Contribuir
 
 Correcções às fontes, regras verificadas com referência a legislação e novos casos de conformidade são bem-vindos. Regras sem fonte citada são marcadas como *não verificadas*.

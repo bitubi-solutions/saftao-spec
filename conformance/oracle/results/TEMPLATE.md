@@ -25,5 +25,8 @@ Quem submeteu: ______
 | R-013-nc-sem-references.xml | NC sem References. | Em vendas, References é obrigatório em NC (DE 317/20 4.1.4.19.10). | | |
 | C-01-controlo-moeda-invalida.xml | CONTROLO: CurrencyCode EUR (o XSD só admite AOA ou USD). | Tem de falhar: viola o XSD. | | |
 | C-02-controlo-campo-em-falta.xml | CONTROLO: Header sem CompanyName (obrigatório). | Tem de falhar: viola o XSD. | | |
+| C-04-controlo-customerid-duplicado.xml | CONTROLO: dois Customer com o mesmo CustomerID (xs:unique do XSD). | Tem de falhar num validador que aplique as restrições de identidade do XSD. | | |
+| C-05-controlo-customerid-inexistente.xml | CONTROLO: factura com CustomerID que não existe em Customer (xs:keyref do XSD). | Tem de falhar num validador que aplique as restrições de identidade do XSD. | | |
+| C-06-controlo-invoiceno-duplicado.xml | CONTROLO: dois documentos com o mesmo InvoiceNo (xs:unique do XSD). | Tem de falhar num validador que aplique as restrições de identidade do XSD. | | |
 | C-03-controlo-formato-monetario.xml | CONTROLO: TaxPayable com uma casa decimal (o XSD exige duas). | Tem de falhar: viola o XSD. | | |
 | O-023-encoding-latin1.xml | Declarado e codificado em ISO-8859-1, com 'é' no nome da empresa. | O-023: esperado erro de encoding. | | |

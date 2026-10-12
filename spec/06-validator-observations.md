@@ -96,7 +96,7 @@ Registo dos testes feitos com o pacote `conformance/oracle/`. Cada resultado é 
 
 | Observação | Validador | Data | Resultado |
 |---|---|---|---|
-| O-001 (`TaxPayable` errado) | saft.ao | 2026-10-12 | **não reproduzida**: aceitou o ficheiro sem mensagens |
+| O-001 (`TaxPayable` errado; também `GrossTotal` e `NetTotal` incoerentes) | saft.ao | 2026-10-12 | **não reproduzida**: aceitou todas as variantes sem mensagens |
 | O-002 (desconto/`UnitPrice`) | saft.ao | 2026-10-12 | **não reproduzida**: aceitou os dois ficheiros |
 | O-003 (`TotalCredit` da secção) | saft.ao | 2026-10-12 | **não reproduzida** |
 | O-005 (`DebitAmount` numa FT) | saft.ao | 2026-10-12 | **não reproduzida** |
@@ -108,7 +108,7 @@ Registo dos testes feitos com o pacote `conformance/oracle/`. Cada resultado é 
 | O-030 (numeração com salto) | saft.ao | 2026-10-12 | **não reproduzida** |
 | O-032 (hash adulterado) | saft.ao | 2026-10-12 | **não reproduzida** |
 
-O saft.ao aceitou **todos** os 15 ficheiros testados até agora. Não é seguro dizer sequer que valide o esquema: leu um ficheiro Latin-1 como UTF-8 sem se queixar. Está em verificação com controlos que violam o XSD (ver `conformance/oracle/results/`). Até lá, **não serve de oráculo** para regras além do XSD. Detalhes em `conformance/oracle/results/saft.ao-2026-10-12.md`. As restantes observações continuam por testar. Para a AGT, o único teste fiável é o validador de produtores do portal.
+O saft.ao aceitou **todos** os 17 ficheiros que passam o XSD e rejeitou os 3 controlos que o violam: **valida só o esquema** (`conformance/oracle/results/saft.ao-2026-10-12.md`). **Não serve de oráculo** para regras além do XSD, apesar de os seus módulos "Documentos" e "Totais" sugerirem mais. Detalhes em `conformance/oracle/results/saft.ao-2026-10-12.md`. As restantes observações continuam por testar. Para a AGT, o único teste fiável é o validador de produtores do portal.
 
 ## Como as bibliotecas devem usar isto
 

@@ -5,7 +5,7 @@ todos passam (ou não) o XSD, para que um erro do validador externo possa ser at
 
 Uso: python3 tools/make_oracle_pack.py conformance/oracle
 """
-import json, os, subprocess, sys
+import json, os, re, subprocess, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from make_sales_sample import build
 
@@ -16,6 +16,9 @@ M10_SEM_ACENTOS = ("M10", "Isento nos termos da alinea a) do n1 do artigo 12. do
 CONTROLS = [
  ("C-01-controlo-moeda-invalida", lambda x: x.replace("<CurrencyCode>AOA<", "<CurrencyCode>EUR<", 1), "CONTROLO: CurrencyCode EUR (o XSD só admite AOA ou USD).", "Tem de falhar: viola o XSD."),
  ("C-02-controlo-campo-em-falta", lambda x: x.replace("<CompanyName>Empresa de Teste Sintetico</CompanyName>", "", 1), "CONTROLO: Header sem CompanyName (obrigatório).", "Tem de falhar: viola o XSD."),
+ ("C-04-controlo-customerid-duplicado", lambda x: re.sub(r"(<Customer>.*?</Customer>)", r"\1\1", x, count=1, flags=re.S), "CONTROLO: dois Customer com o mesmo CustomerID (xs:unique do XSD).", "Tem de falhar num validador que aplique as restrições de identidade do XSD."),
+ ("C-05-controlo-customerid-inexistente", lambda x: x.replace("<CustomerID>CF</CustomerID><Line>", "<CustomerID>XX</CustomerID><Line>", 1), "CONTROLO: factura com CustomerID que não existe em Customer (xs:keyref do XSD).", "Tem de falhar num validador que aplique as restrições de identidade do XSD."),
+ ("C-06-controlo-invoiceno-duplicado", lambda x: x.replace("<InvoiceNo>FT 2026A/2</InvoiceNo>", "<InvoiceNo>FT 2026A/1</InvoiceNo>", 1), "CONTROLO: dois documentos com o mesmo InvoiceNo (xs:unique do XSD).", "Tem de falhar num validador que aplique as restrições de identidade do XSD."),
  ("C-03-controlo-formato-monetario", lambda x: x.replace("<TaxPayable>28.00<", "<TaxPayable>28.0<", 1), "CONTROLO: TaxPayable com uma casa decimal (o XSD exige duas).", "Tem de falhar: viola o XSD."),
 ]
 
