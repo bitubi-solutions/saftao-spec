@@ -34,6 +34,7 @@ Para conferência:
 
 - Texto final em vigor do acto de requisitos técnicos (a proposta MinFin é de 2018).
 - Se o regime de facturação electrónica de 2025/26 alterou os parâmetros do `Hash` do SAF-T (ver `04-signature.md`).
+  - Leitura de 2026-10-12 da documentação pública da API de facturação electrónica (`portaldoparceiro.hml.minfin.gov.ao/doc-agt/`, ambiente de homologação): a API usa JWS RS256 sobre campos próprios e os números de documento seguem o padrão `tipo série/número`. **Não** diz nada sobre o campo `Hash` do ficheiro SAF-T. Continua em aberto.
 - Versão mais recente do XSD no portal da AGT.
 - Todo o conteúdo marcado "por confirmar" ou "por transcrever" em `03-business-rules.md`.
 
