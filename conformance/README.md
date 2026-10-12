@@ -31,6 +31,9 @@ Uma biblioteca que só valide o XSD passa os casos `schema` e falha os `business
 | `invalid-not-xml` | inválido | schema | XML mal formado |
 | `rule-purchase-count-mismatch` | inválido | business-rule (R-009) | `NumberOfEntries` ≠ número de documentos de compra |
 | `rule-credit-note-without-reference` | inválido | business-rule (R-013) | Nota de crédito de compra sem `References` |
+| `invalid-duplicate-supplier-id` | inválido | schema (xs:unique) | Dois fornecedores com o mesmo `SupplierID` |
+| `invalid-unknown-supplier-reference` | inválido | schema (xs:keyref) | Compra com `SupplierID` inexistente |
+| `rule-nif-with-country-prefix` | inválido | business-rule (R-050) | NIF do `Header` com prefixo de país |
 
 Os casos `schema` foram confirmados com o validador de referência (`tools/validate.py`, lxml/libxml2). Os `business-rule` foram confirmados como **válidos no XSD** pelo mesmo validador; a violação da regra decorre do texto da especificação.
 
@@ -47,7 +50,7 @@ Cada vector tem `status`; ver `spec/04-signature.md`.
 
 ## Próximos casos
 
-- Um ou mais casos por regra restante de `03-business-rules.md` (R-001 a R-008, R-010 a R-011, R-020 a R-024), com ficheiros de venda, movimento, conferência e recibos.
+- Um ou mais casos por regra restante de `03-business-rules.md`. As regras de vendas, movimento, conferência, recibos e razão precisam de ficheiros-base próprios (o único ficheiro de referência é o de compras); serão criados com a primeira biblioteca, que os valida.
 - Vectores de assinatura para documentos de movimento e de conferência, e casos de `HashControl` (integrados, recuperados).
 
 ## Origem e licença

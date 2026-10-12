@@ -1,0 +1,5 @@
+{
+  "valid": false,
+  "level": "schema",
+  "reason": "Dois fornecedores com o mesmo SupplierID: viola a restrição de unicidade (xs:unique SupplierIDConstraint) do XSD."
+}

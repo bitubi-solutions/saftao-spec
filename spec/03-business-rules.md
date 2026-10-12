@@ -200,6 +200,16 @@ Local e data de descarga onde os artigos são colocados à disposição do clien
 - `References` (ver R-013) é obrigatório em notas de crédito.
 
 
+### R-046 — Unicidade e integridade referencial do XSD *(verificado: XSD)*
+O XSD define restrições de identidade (`xs:unique` e `xs:keyref`) que **fazem parte da validação do esquema**. Uma biblioteca que valide o XSD tem de as aplicar; uma que **gere classes** a partir do XSD e não valide o documento **não** as herda automaticamente e tem de as implementar à mão.
+
+| Tipo | Restrições |
+|---|---|
+| **Unicidade** | `AccountID`; `CustomerID`; `SupplierID`; `ProductCode`; `JournalID`; `TransactionID`; `InvoiceNo` (vendas); `DocumentNumber` (movimentos e conferência, cada um na sua tabela); `PaymentRefNo` |
+| **Referência a chave existente** | `GroupingCode` → `AccountID`; `AccountID` das linhas de débito e de crédito do razão → `AccountID`; `CustomerID` nos movimentos do razão, vendas, movimentos de mercadorias, conferência e recibos → `CustomerID`; `SupplierID` no razão, movimentos de mercadorias e compras → `SupplierID`; `ProductCode` das linhas de vendas, movimentos e conferência → `ProductCode` |
+
+*Nota:* o `InvoiceNo` dos documentos de **compra** não tem restrição de unicidade no XSD (é o número do fornecedor).
+
 ## Contagens e somas de controlo
 
 Em todas as tabelas de documentos, os documentos anulados (`Status = A`) **contam** para o número de registos mas **não** entram nas somas de controlo.

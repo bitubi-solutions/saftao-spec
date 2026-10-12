@@ -1,0 +1,5 @@
+{
+  "valid": false,
+  "level": "schema",
+  "reason": "Documento de compra com SupplierID que não existe em MasterFiles/Supplier: viola a restrição de integridade referencial (xs:keyref InvoiceSupplierIDConstraint)."
+}

@@ -1,0 +1,8 @@
+{
+  "valid": false,
+  "level": "business-rule",
+  "rules": [
+    "R-050"
+  ],
+  "reason": "NIF do Header com prefixo de país; deve ser o NIF angolano sem espaços nem prefixo. Passa o XSD."
+}
