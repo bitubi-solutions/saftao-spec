@@ -90,6 +90,17 @@ Distingue **erros** (bloqueiam a submissão) de **avisos** (campos incompletos o
 
 Privacidade (política do site, não verificada por nós): o ficheiro é processado em memória e não é gravado em disco nem em base de dados; os servidores estão em Portugal (transferência fora de Angola, que a política enquadra nos artigos 33.º e 34.º da Lei n.º 22/11); o site usa Cloudflare Turnstile (confirmação anti-robô), Sentry (gravação de sessão com texto mascarado, sem enviar o conteúdo do SAF-T) e Google Analytics. Ver também `conformance/oracle/README.md`.
 
+## Resultados de testes em validadores externos
+
+Registo dos testes feitos com o pacote `conformance/oracle/`. Cada resultado é do validador indicado, **não** da AGT, salvo indicação.
+
+| Observação | Validador | Data | Resultado |
+|---|---|---|---|
+| O-001 (`TaxPayable` errado) | saft.ao | 2026-10-12 | **não reproduzida**: aceitou o ficheiro sem mensagens |
+| O-002 (desconto/`UnitPrice`) | saft.ao | 2026-10-12 | **não reproduzida**: aceitou os dois ficheiros |
+
+O saft.ao **não** verifica estes cálculos, por isso não serve de oráculo para a família O-001 a O-004. Detalhes em `conformance/oracle/results/saft.ao-2026-10-12.md`. As restantes observações continuam por testar. Para a AGT, o único teste fiável é o validador de produtores do portal.
+
 ## Como as bibliotecas devem usar isto
 
 1. **Modo estrito (opcional).** Além das regras `R-nnn`, a biblioteca oferece um modo que aplica as observações marcadas "observado" **sem contestação**: O-001 a O-004, O-007, O-010, O-011, O-013, O-023, O-032 (O-005 só depois de testada por tipo de documento). Por defeito desligado, porque a fonte não é oficial e o validador varia. Os problemas do modo estrito saem com severidade **aviso**, não erro.
