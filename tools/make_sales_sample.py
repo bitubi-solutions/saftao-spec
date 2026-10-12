@@ -25,7 +25,7 @@ NS = "urn:OECD:StandardAuditFile-Tax:AO_1.01_01"
 def build(opt=None):
     """opt: dicionário de variações (ver os nomes abaixo)."""
     o = dict(validated=True, tax_payable_delta="0", discount=None, nc_debit="100.00", total_credit_delta="0",
-             nc_gross_override=None, tamper_hash=False, discount_unit_not_deducted=False, ft_side="C", line_tax_pct="14.00", line_tax_code="NOR",
+             nc_gross_override=None, tamper_hash=False, discount_unit_not_deducted=False, ft_side="C", ft2_no="FT 2026A/2", line_tax_pct="14.00", line_tax_code="NOR",
              exemption=None, customers=None, tax_region="AO", nc_refs=True, software_no=None)
     o.update(opt or {})
     soft = o["software_no"] or ("999/AGT/2026" if o["validated"] else "0")
@@ -33,7 +33,7 @@ def build(opt=None):
 
     # documentos: (série, tipo, nº, data, hora, [linhas])  linha: (qtd, preço unitário, 'C'|'D')
     docs = [("FT", "FT 2026A/1", "2026-05-10", "2026-05-10T10:00:00", [("2", "100.00", o["ft_side"])]),
-            ("FT", "FT 2026A/2", "2026-05-11", "2026-05-11T11:30:00", [("1", "50.00", o["ft_side"])]),
+            ("FT", o["ft2_no"], "2026-05-11", "2026-05-11T11:30:00", [("1", "50.00", o["ft_side"])]),
             ("NC", "NC 2026A/1", "2026-05-12", "2026-05-12T09:15:00", [("1", o["nc_debit"], "D")])]
     prev = {}
     body, tot_c, tot_d = [], Decimal(0), Decimal(0)
@@ -74,7 +74,7 @@ def build(opt=None):
         series = no.split("/")[0]
         msg = ";".join([d, dt, no, str(gross), prev.get(series, "")])
         h = sign(msg) if o["validated"] else "0"
-        if o["tamper_hash"] and no.endswith("/2"): h = h[:-4] + ("AAAA" if h[-4:] != "AAAA" else "BBBB")
+        if o["tamper_hash"] and no == o["ft2_no"]: h = h[:-4] + ("AAAA" if h[-4:] != "AAAA" else "BBBB")
         prev[series] = h
         body.append(
             f"<Invoice><InvoiceNo>{no}</InvoiceNo><DocumentStatus><InvoiceStatus>N</InvoiceStatus><InvoiceStatusDate>{dt}</InvoiceStatusDate>"

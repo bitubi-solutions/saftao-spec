@@ -27,6 +27,7 @@ CASES = [
  ("O-015-regiao-cabinda", dict(tax_region="AO-CAB"), "TaxCountryRegion AO-CAB (Cabinda) na tabela e nas linhas.", "O-015: ver se o validador aceita AO-CAB."),
  ("O-020-nif-duplicado", dict(customers=[("CF", "999999999", "Consumidor final"), ("C2", "1234567890", "Cliente A"), ("C3", "1234567890", "Cliente B")]), "Dois clientes com o mesmo CustomerTaxID (os documentos usam só CF).", "O-020: ver se rejeita NIF repetido."),
  ("O-032-hash-adulterado", dict(tamper_hash=True), "Hash da FT 2026A/2 alterado nos últimos 4 caracteres.", "O-032: esperado 'Hash está errado' (se o validador verificar a cadeia)."),
+ ("O-030-numeracao-com-salto", dict(ft2_no="FT 2026A/3"), "Série FT 2026A com numeração 1 e 3 (falta o 2).", "O-030: ver se o validador exige numeração contínua."),
  ("R-013-nc-sem-references", dict(nc_refs=False), "NC sem References.", "Em vendas, References é obrigatório em NC (DE 317/20 4.1.4.19.10)."),
 ]
 
@@ -49,3 +50,10 @@ if __name__ == "__main__":
               open(os.path.join(out, "pack.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=2)
     for r in rows:
         print(("XSD OK  " if r[3] else "XSD ERRO"), r[0], r[4][:100])
+
+    # folha de resultados pré-preenchida
+    lines = ["# Resultados: <validador> — AAAA-MM-DD", "", "Validador: ______  (versão/data)", "Quem submeteu: ______", "",
+             "| Ficheiro | O que testa | Esperado (hipótese) | Resultado (ok / aviso / erro) | Mensagem exacta |", "|---|---|---|---|---|"]
+    for r in rows:
+        lines.append(f"| {r[0]}.xml | {r[1]} | {r[2]} | | |")
+    open(os.path.join(out, "results", "TEMPLATE.md"), "w", encoding="utf-8").write("\n".join(lines) + "\n")

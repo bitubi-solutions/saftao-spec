@@ -11,7 +11,13 @@ Todos passam o XSD (confirmado com `tools/validate.py`). Logo, **qualquer erro**
 3. **O saft.ao não é a AGT.** É um validador independente, mantido pela equipa do KwanzaGest, sem afiliação à AGT. Um resultado dele mostra o que **esse** validador faz, não o que a AGT faz. Só o validador da AGT é oficial.
 4. **O validador de produtores da AGT** (no portal, com a tua conta): usar **apenas a função de validar**, nunca a de entrega. Confirmar os termos de uso antes.
 
+## Onde estão os ficheiros
+
+No Windows: `C:\Users\DumildeFernando\github\bitubi\saftao-spec\conformance\oracle\` (a mesma pasta que no WSL). Começar por `00-base.xml`: se o validador reclamar do ficheiro-base, anotar a mensagem, porque afecta a leitura de todos os outros.
+
 ## Como registar resultados
+
+Copiar `results/TEMPLATE.md` para `results/<validador>-AAAA-MM-DD.md` e preencher as duas últimas colunas.
 
 Para cada ficheiro, copiar a mensagem **exacta** do validador (ou "sem erros") para `results/<validador>-AAAA-MM-DD.md`, neste formato:
 
