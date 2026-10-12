@@ -75,9 +75,24 @@ Cada linha: identificador `O-nnn`, o que se observou, os issues, e o estado.
 | O-051 | A FAQ n.º 56 da AGT, citada num issue, define uma tag `CUD` a preencher com `0` até nova definição; não consta do XSD 1.01_01 | #8 | observado |
 | O-052 | O erro `E04` (*numberOfEntries vs documents*) reportado em 2025 é da **API de facturação electrónica**, não do SAF-T | #261 | fora do âmbito |
 
+## Validadores de terceiros: o que afirmam verificar
+
+O [saft.ao](https://saft.ao) é um validador **gratuito e independente** (sem afiliação à AGT), mantido pela equipa do KwanzaGest e operado pela GloboSoft. Aceita ficheiros até 20 MB. O que **afirma** verificar, em seis módulos *(informação do próprio site, não confirmada por nós; não conseguimos testá-lo, porque exige confirmação anti-robô)*:
+
+1. **Estrutura:** conformidade com o esquema oficial da AGT 1.01.
+2. **Cabeçalho:** dados da empresa, NIF do contribuinte e período fiscal.
+3. **Entidades:** clientes, fornecedores e produtos referenciados no ficheiro.
+4. **Impostos:** taxas, isenções e motivos de isenção.
+5. **Documentos:** numeração sequencial, datas e hashes.
+6. **Totais:** coerência entre linhas, impostos e totais.
+
+Distingue **erros** (bloqueiam a submissão) de **avisos** (campos incompletos ou incoerentes, que não bloqueiam mas convém corrigir). As seis categorias coincidem com as observações O-001 a O-050, o que reforça que a validação prática vai além do esquema. **A distinção erro/aviso é útil para as bibliotecas**: as verificações do modo estrito devem poder sair como *avisos* e não como erros.
+
+Privacidade (política do site, não verificada por nós): o ficheiro é processado em memória e não é gravado em disco nem em base de dados; os servidores estão em Portugal (transferência fora de Angola, que a política enquadra nos artigos 33.º e 34.º da Lei n.º 22/11); o site usa Cloudflare Turnstile (confirmação anti-robô), Sentry (gravação de sessão com texto mascarado, sem enviar o conteúdo do SAF-T) e Google Analytics. Ver também `conformance/oracle/README.md`.
+
 ## Como as bibliotecas devem usar isto
 
-1. **Modo estrito (opcional).** Além das regras `R-nnn`, a biblioteca oferece um modo que aplica as observações marcadas "observado" **sem contestação**: O-001 a O-005, O-007, O-010, O-011, O-013, O-023, O-032. Por defeito desligado, porque a fonte não é oficial e o validador varia.
+1. **Modo estrito (opcional).** Além das regras `R-nnn`, a biblioteca oferece um modo que aplica as observações marcadas "observado" **sem contestação**: O-001 a O-004, O-007, O-010, O-011, O-013, O-023, O-032 (O-005 só depois de testada por tipo de documento). Por defeito desligado, porque a fonte não é oficial e o validador varia. Os problemas do modo estrito saem com severidade **aviso**, não erro.
 2. **Nunca rejeitar por observações contestadas** (O-006, O-020, O-015) sem opção explícita.
 3. **Cada observação precisa de um caso de teste** antes de passar a regra. O melhor teste é submeter ficheiros sintéticos ao próprio validador da AGT, por quem tenha acesso e **só ao validador, nunca à entrega**; ver o plano na conversa do projecto.
 4. As observações **não** substituem a spec: a lei e o XSD prevalecem.
